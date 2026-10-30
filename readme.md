@@ -1,8 +1,14 @@
 # pumpkin-carve
 
-build a jack-o-lantern in blender, then grade it in photocraft.
-six steps, two tracks per step (by hand, or in python). this page is
-the map — [the tutorial](tutorial/tutorial.md) is the walk.
+build a jack-o-lantern in blender, then finish it in photocraft.
+how, in one breath: you'll squash a sphere into a ribbed pumpkin,
+sweep a bark stem along a curve, cut the eyes and grin clean through
+the rind with booleans and line the holes with glowing flesh, shade
+it flat-orange with shader nodes, trace it with grease pencil ink,
+then open the render in photocraft for vibrance, warmth, and a
+candlelit glow. six steps, two tracks per step (by hand in the
+interface, or in annotated python). this page is the map —
+[the tutorial](tutorial/tutorial.md) is the walk.
 
 <table>
   <tr>
@@ -28,32 +34,32 @@ the map — [the tutorial](tutorial/tutorial.md) is the walk.
 <table>
   <tr>
     <td width="180"><img src="tutorial/examples/01-body.png" width="170" alt="body"></td>
-    <td><b>1 · ribbed body</b> — 15 grooves, real rind, groove mask for later shading.<br>
+    <td><b>1 · ribbed body</b> — start from a uv sphere, scale it squat, sink every other edge loop to carve 15 grooves, then solidify so the rind has real thickness. in code the same shape is one polar grid, and each vertex remembers whether it sits in a groove — step 4 shades with that memory.<br>
     <a href="tutorial/tutorial.md">tutorial step 1</a> · <a href="tutorial/examples/01-body.blend">example .blend</a></td>
   </tr>
   <tr>
     <td><img src="tutorial/examples/02-stem.png" width="170" alt="stem"></td>
-    <td><b>2 · stem, twig, leaves</b> — bent bark stem, broken hollow tip, flat-lying leaves.<br>
+    <td><b>2 · stem, twig, leaves</b> — draw a bezier hook, bevel it thick at the base and thin at the tip, ridge it like bark, leave the end open with a dark disc inside so it reads snapped. a thin twig and four leaves lying flat finish it.<br>
     <a href="tutorial/tutorial.md">tutorial step 2</a> · <a href="tutorial/examples/02-stem.blend">example .blend</a></td>
   </tr>
   <tr>
     <td><img src="tutorial/examples/03-carved-face.png" width="170" alt="carved face"></td>
-    <td><b>3 · carve the face</b> — boolean cuts, pale funnels, amber glow, light inside.<br>
+    <td><b>3 · carve the face</b> — shape two triangles and a zigzag grin as flat cutters, boolean-difference them through the rind, then build a pale funnel inside each hole capped with amber emission. one small light placed inside the body sells the candle.<br>
     <a href="tutorial/tutorial.md">tutorial step 3</a> · <a href="tutorial/examples/03-carved-face.blend">example .blend</a></td>
   </tr>
   <tr>
     <td><img src="assets/pumpkin-hero-960x640.webp" width="170" alt="shading"></td>
-    <td><b>4 · shading layers</b> — toon color, groove shading, streaks, silhouette rim. node tree, socket by socket.<br>
+    <td><b>4 · shading layers</b> — in the shader editor: a toon bsdf for flat color, the step-1 groove mask mixing lit orange into dark valley brown, two noise textures streaked over the top so it never looks like plastic, and an emission rim gated to the silhouette only. the tutorial wires it node by node.<br>
     <a href="tutorial/tutorial.md">tutorial step 4</a></td>
   </tr>
   <tr>
     <td><img src="tutorial/examples/04-inked-final.png" width="170" alt="inked"></td>
-    <td><b>5 · ink with grease pencil</b> — line art outlines, then a white-background drawing variant.<br>
+    <td><b>5 · ink with grease pencil</b> — add a grease pencil stroke object with a line art modifier aimed at the pumpkin collection: it traces contour, crease, and intersection lines in near-black brown. render again on white with thicker lines and you get a printable drawing of your pumpkin.<br>
     <a href="tutorial/tutorial.md">tutorial step 5</a> · <a href="tutorial/examples/04-inked-final.blend">example .blend</a></td>
   </tr>
   <tr>
     <td><img src="assets/pumpkin-framed-978x658.webp" width="170" alt="graded"></td>
-    <td><b>6 · grade in photocraft</b> — vibrance, warm filter, screen-blend glow. same steps as terminal commands in <code>post/post.sh</code>.<br>
+    <td><b>6 · finish in photocraft</b> — photocraft is an open-source rust editor (layers, masks, real psd files, offline). open the render: vibrance +35, contrast +22, warm photo filter at 18%, then duplicate the layer, blur it, and screen-blend at 60% so highlights bloom. save a flat png to share and a layered <code>.psd</code> to keep editing. <code>post/post.sh</code> runs the identical five steps from the terminal.<br>
     <a href="tutorial/tutorial.md">tutorial step 6</a></td>
   </tr>
 </table>
