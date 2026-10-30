@@ -679,11 +679,17 @@ by hand, so one material edit restyles the whole patch.
 ## ten more pumpkins (cultivar gallery)
 
 the generic pumpkin is one build of `blender/build_pumpkin.py`. every
-cultivar below is the same builder with different parameters —
-`-- --variant=<name>` — plus one blender technique and one photocraft
-feature each. the full brief lives in `blender/variants.md`; the
-exact post chains in `post/variants.sh`. each entry shows the raw
-render and the graded result side by side.
+cultivar below is its own script in `blender/cultivars/` — separate
+file, separate construction, no shared parameters. each is a whole
+uncarved display fruit (the reference photos in `refs/<name>/` are
+uncarved), built front-first against its spec in
+`refs/<name>/README.md`. rebuild any of them with:
+
+`blender -b --factory-startup --python-exit-code 1 -P blender/cultivars/<name>.py`
+
+each entry shows the raw front render and the graded result. the
+side-profile render sits beside it (`variants/<name>-profile.png`).
+exact post chains in `post/variants.sh`.
 
 key: **b** = blender feature shown, **p** = photocraft feature shown.
 terms link out on first use: the
@@ -692,237 +698,186 @@ and [photocraft](https://github.com/storytold/photocraft).
 
 ### 1. cinderella (rouge vif d'etampes)
 
-french heirloom: very flat, concave crown, deep wide ribs, brilliant
-red-orange skin. the carriage pumpkin — squat elegance, not round.
-12 lobes, groove 0.16, squash z 0.55, rind `#d8481c`.
-carved: yes, wide grin, glow shifted red-amber to match the skin.
+french heirloom: very flat wide disc, concave crown, 14 deep ribs,
+red-orange skin. build: `blender/cultivars/cinderella.py` revolves a
+measured side profile ([spin](https://docs.blender.org/manual/en/latest/modeling/meshes/editing/duplicate_extrude/spin.html)
+tool equivalent), then modulates each ring with a 14-fold rib
+function. spec: `refs/cinderella/README.md`.
 
 ![cinderella render](variants/cinderella.png) ![cinderella graded](../post/variants/cinderella.png)
 
-**b — [displace modifier](https://docs.blender.org/manual/en/latest/modeling/modifiers/deform/displace.html)
-as a rib-shaping study.** the polar grid gives cinderella its
-regular deep ribs directly (12 lobes, groove 0.16, power 0.50).
-the displace path to try next: add a clouds texture as a
-displace modifier over a subdivided body, strength tuned, midlevel
-0.5 — displace moves real vertices along their normals, so ribs
-catch light at glancing angles the shader alone can't fake.
-compare both at this scale and keep whichever reads better; the
-builder records which one shipped.
+**b — profile lathe + proportional crown.** the concave dip is part
+of the profile polyline, and the short corky stem seats into it.
 
 **p — curves adjustment layer** (`layer.newAdjustmentLayer.curves`
 
 - `layer.setAdjustment {"red":[[0,0],[64,48],[192,208],[255,255]]}`).
-  an s-curve on the red channel deepens the lower mids and lifts the
-  upper third — print-like grade instead of the generic's vibrance.
-  the layer stays live: the shipped `.psd` re-opens with the curve
-  editable. see the [agent-driven headless examples](https://github.com/storytold/photocraft#built-for-agents)
-  for how every interface command is also a cli command.
+  red-channel s-curve; the shipped `.psd` keeps the curve live.
 
 ### 2. black futsu
 
-japanese heirloom: squat and blocky, heavy ribbing, dark green skin
-curing toward warm buff, warty when mature. the set's texture study —
-displayed whole, never carved. ink only.
+japanese heirloom: squat blocky fruit, wart rows along the ribs,
+dark green curing toward buff. build:
+`blender/cultivars/black_futsu.py` — ribbed body plus a
+[geometry nodes](https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/index.html)
+tree that distributes points on faces masked to rib crests and
+instances a wart prototype on them. spec:
+`refs/black-futsu/README.md`.
 
-![black futsu render](variants/black-futsu.png) ![black futsu threshold](../post/variants/black-futsu.png)
+![black futsu render](variants/black-futsu.png) ![black futsu graded](../post/variants/black-futsu.png)
 
-**b — voronoi bump (wants to be a [displace modifier](https://docs.blender.org/manual/en/latest/modeling/modifiers/deform/displace.html)).**
-what you see is [textured bump](https://docs.blender.org/manual/en/latest/render/shader_nodes/textures/voronoi.html):
-a voronoi f1 field at scale 18 through a bump node at strength
-0.5 over the rind. full displace geometry tore the solidify rim
-during build, so bump is the documented fallback — at render size
-it reads identically. when no rind rim is in the way, take the
-displace path from the modifier docs and compare; the builder
-records the choice in `blender/variants.md`.
+**b — scatter + [instance on points](https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/point/instance_on_points.html).**
+real wart geometry, seeded, density driven by the groove attribute.
 
-**p — threshold** (`image.adjustments.threshold {"threshold":128}`).
-one flat decision: pixels above middle grey go white, below go
-black. the result is a woodcut beside the color render and it
-teaches photocraft's graphic-adjustment side, not just its photo
-side.
+**p — brightness/contrast**
+(`image.adjustments.brightnessContrast
+{"brightness":28,"contrast":18}`). lifts the dark rind for print.
+threshold was tried first and ignored its level in photocraft
+0.17, so the lift stands in — recorded, not hidden.
 
 ### 3. sugar pie
 
-new england pie standard: small (15-18 cm), round and slightly
-flattened, smooth bright orange with shallow light ridging and a
-thick ridged green-brown stem. carved small, scaled to fit.
+new england pie standard: small neat ball, shallow ribs, smooth
+bright rind, thick ridged upright stem. build:
+`blender/cultivars/sugar_pie.py` — a bmesh uv sphere scaled to pie
+proportions, ribbed in python, smoothed with a
+[subdivision surface](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/subdivision_surface.html).
+spec: `refs/sugar-pie/README.md`.
 
 ![sugar pie render](variants/sugar-pie.png) ![sugar pie graded](../post/variants/sugar-pie.png)
 
-**b — [array modifier](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/array.html)
-as a trio exercise.** the render above is the single pie (the
-`--variant=sugar-pie` output). the array lesson: select it, add an
-array modifier with an object offset on an empty, count 3, scale
-the empties down the row — three pies, one ground shadow-catcher,
-then alt+d linked duplicates so one material edit restyles the
-patch. instancing discipline, not repetition.
+**b — primitive-deform.** start from a real primitive, deform the
+verts, let subsurf finish the surface.
 
 **p — hue/saturation** (`image.adjustments.hueSaturation
-{"hue":8,"saturation":10}`). a measured warm shift: pie orange to
-porch orange without touching the glow. compare with the generic's
-vibrance — vibrance lifts everything, hue/sat aims.
+{"hue":8,"saturation":10}`). pie orange to porch orange.
 
 ### 4. baby boo
 
-miniature white: 3 in wide, deeply ribbed for its size, creamy ghost
-skin, thin stems. in the field they grow in clusters; the builder
-ships one hero boo and the geometry-nodes exercise below grows the
-cluster. uncarved: too small to carve honestly, ink outlines carry
-the drawing.
+miniature white minis that grow in clusters. build:
+`blender/cultivars/baby_boo.py` builds one ribbed mini, then places
+two [linked duplicates](https://docs.blender.org/manual/en/latest/scene_layout/object/editing/linked_duplicates.html)
+at varied rotation and scale — same mesh, no rebuild. spec:
+`refs/baby-boo/README.md`.
 
 ![baby boo render](variants/baby-boo.png) ![baby boo ghost](../post/variants/baby-boo.png)
 
-**b — [geometry nodes](https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/introduction.html)
-scatter, as an exercise.** the render above is the single hero boo.
-the lesson: new plane, geometry nodes modifier, distribute points
-on faces (~14, seeded) + instance on points with random rotation
-and scale — a ground of boos from one file. the builder notes
-explain why the stem, twig, leaves, crater and groove tubes all
-had to scale with the body: a full-size stem on a 45 mm pumpkin
-reads as a hook growing out of frame (found by the reader test).
+**b — linked duplicates.** one material edit restyles the cluster.
 
-**p — invert** (`image.adjustments.invert`). a white pumpkin on a
-dark ground inverts to a ghost negative. no parameters, total
-transformation — the set's second graphic-art piece.
+**p — invert** (`image.adjustments.invert`). white pumpkins become
+a ghost negative.
 
 ### 5. porcelain doll
 
-large, squared and blocky, deeply ribbed, salmon-pink glossy
-skin. soft round-eye face, amber glow: pink rind with orange light
-is the set's strongest color contrast.
+pink blocky fruit with square shoulders. build:
+`blender/cultivars/porcelain_doll.py` — a subdivided cube spherified
+to a sphere, so flat sides survive, with a
+[weighted normal](https://docs.blender.org/manual/en/latest/modeling/modifiers/modify/weighted_normal.html)
+modifier and a glossy coat shader. spec:
+`refs/porcelain-doll/README.md`.
 
 ![porcelain doll render](variants/porcelain-doll.png) ![porcelain doll graded](../post/variants/porcelain-doll.png)
 
-**b — toward [principled bsdf](https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html)
-clearcoat.** the render above uses the generic's toon-and-groove
-stack in pink — the pink alone carries the cultivar. the upgrade
-path is principled: base color pink, coat 0.6, coat roughness 0.25,
-light subsurface. coat is a real second specular lobe, which is
-why a coated doll would read wet under the same lights that leave
-this one matte. swap it in, re-render, and compare — the tutorial
-table in step 4 holds for both stacks.
+**b — cube to pumpkin.** box modeling origin, organic result.
 
 **p — outer glow layer style** (`layer.layerStyle.replace`
 `{"effects":[{"kind":"outerGlow","params":{"color":"#ff9ac0",
-"opacity":0.5,"size":12}}]}`). a live pink halo on the pumpkin
-layer, kept editable in the shipped `.psd` — demonstrating
-photocraft's layer styles (non-destructive effects, distinct from
-filters). flatten a copy for the web png. see it in the interface
-on [the photoCraft app page](https://getartcraft.com/apps/photocraft)
-(layer styles section) — same feature, two doors.
+"opacity":0.5,"size":12}}]}`). live pink halo, kept editable in
+the shipped `.psd`.
 
 ### 6. jarrahdale
 
-australian heirloom: slate blue-grey and dusty, flattened drum,
-deep ribs. orange flesh inside (the glow quotes it) — blue rind
-with amber light is the set's quietest, most architectural pairing.
+australian heirloom: slate blue-grey flattened drum, dusty bloom.
+build: `blender/cultivars/jarrahdale.py` revolves a drum profile;
+the bloom is a
+[principled](https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html)
+sheen layer masked to rib valleys, not geometry. spec:
+`refs/jarrahdale/README.md`.
 
 ![jarrahdale render](variants/jarrahdale.png) ![jarrahdale duotone](../post/variants/jarrahdale.png)
 
-**b — [screw modifier](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/screw.html)
-lathe, as a rebuild.** the render above is the polar grid driven
-flat (12 lobes, squash 0.58) — a serviceable drum. the lathe
-lesson: draw the 2d drum profile (concave crown, straight wall,
-flat base), screw it 360. profile-first modeling for
-rotationally symmetric fruit, the opposite of the generic's
-polar grid. rebuild it both ways and compare the crown.
+**b — sheen for bloom.** dusty skin without dusty vertices.
 
 **p — gradient map** (`layer.newAdjustmentLayer.gradientMap`,
-shadows `#4a5a64` to highlights `#e88a30`). maps tone to color:
-the grey ramp becomes a slate-to-amber duotone check beside the
-color version. psd kept with the map live.
+shadows `#4a5a64` to highlights `#e88a30`). slate-to-amber
+duotone, map kept live in the `.psd`.
 
 ### 7. lumina
 
-ivory white, smooth and matte, shallow ribbing, globular to
-slightly squat. the painter's canvas of the family — and the
-set's carving close-up subject, white rind with deep orange glow.
+smooth white ball, green stem. build:
+`blender/cultivars/lumina.py` — subdivided icosphere for even
+triangles, faint ribs, white rind with
+[subsurface scattering](https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html)
+so it reads lit from within. spec: `refs/lumina/README.md`.
 
 ![lumina render](variants/lumina.png) ![lumina graded](../post/variants/lumina.png)
 
-**b — toward subsurface in [principled bsdf](https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html).**
-the render above is the toon stack in ivory — white rind, amber
-glow, maximum legibility. the soft-light path is principled:
-subsurface 0.25 with a warm radius plus a fresnel edge tint
-`#cfe0ea`, replacing the toon node. same lights, but the skin
-would read lit from within rather than painted on. swap it in,
-re-render, hold both up to a window.
+**b — subsurface skin.** the smooth-fruit study.
 
 **p — photo filter, cooling** (`image.adjustments.photoFilter
-{"color":"#bfd9e8","density":15}`). moonlit instead of candlelit —
-the deliberate opposite of the generic's warm grade, proving the
-filter works in both directions.
+{"color":"#bfd9e8","density":15}`). moonlit, opposite of the
+generic's warm grade.
 
 ### 8. long island cheese
 
-pre-civil-war american heirloom: the flattest of the ten, a buff-tan
-wheel, smooth skin, medium ribs, slender woody stem. still-life
-subject, uncarved, thin ink.
+buff-tan wheel with the stem sunk in a recessed well. build:
+`blender/cultivars/long_island_cheese.py` — flattened ribbed wheel,
+then a [boolean](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/booleans.html)
+cutter sockets the crown and the short stem plants inside it.
+spec: `refs/long-island-cheese/README.md`.
 
 ![long island cheese render](variants/long-island-cheese.png) ![cheese graded](../post/variants/long-island-cheese.png)
 
-**b — edit-mode [spin profile](https://docs.blender.org/manual/en/latest/modeling/meshes/tools/spin.html)
-plus a [taper-curved](https://docs.blender.org/manual/en/latest/modeling/curves/properties/geometry.html)
-stem, as a rebuild.** the render above is the polar grid driven
-flat (14 lobes, squash 0.48) — a serviceable wheel. the profile
-lesson: spin a cheese-wheel profile in edit mode, and shape the
-stem bezier with a separate taper curve object (curve properties >
-geometry > taper object). two classic profile tools the generic
-builder never touches. rebuild it both ways; the spin version
-wins on crown and base flatness.
+**b — boolean socket.** holes for seats, not just faces.
 
 **p — color balance** (`image.adjustments.colorBalance
-{"midtones":[12,6,-4]}`). warm mids, held shadows: tonal-range
-targeting, so the night background stays put while the tan rind
-glows.
+{"midtones":[12,6,-4]}`). warm mids, held shadows.
 
 ### 9. harvest moon
 
-hybrid carving standard: round, smooth, uniform dark orange, bred
-for an even carve. the generic's polished sibling — same family,
-deeper groove banding.
+big golden ball. build: `blender/cultivars/harvest_moon.py` — a
+smooth globe whose point is the documented three-point area-light
+rig (warm key, cool fill, warm rim, values in the file). spec:
+`refs/harvest-moon/README.md`.
 
 ![harvest moon render](variants/harvest-moon.png) ![harvest moon graded](../post/variants/harvest-moon.png)
 
-**b — [freestyle](https://docs.blender.org/manual/en/latest/render/freestyle/introduction.html)
-line rendering.** render-layer freestyle with silhouette + crease
-linesets instead of grease pencil line art, on the same model.
-compare the two: freestyle is crisper at edges, line art follows
-surface flow better. the tutorial table in step 5 lists both.
+**b — studio lighting** ([area lights](https://docs.blender.org/manual/en/latest/render/lights/index.html),
+documented values). gold reads without blowing out.
 
 **p — levels** (`image.adjustments.levels
-{"shadowInput":18,"gamma":0.95}`). black point in, gamma down a
-touch: crushes the night while holding rind detail. paired with
-cinderella's curves, the two teach when to use which (curves for
-shape, levels for range).
+{"shadowInput":18,"gamma":0.95}`). black point in for night
+contrast. compare with cinderella's curves: curves shape, levels
+range.
 
 ### 10. kabocha
 
-japanese winter squash: squat and round, dull dark green and bumpy,
-light green-grey striping and speckling, flat top, corky stalk.
-still-life green — the face would fight the striping.
+dark drum with celadon mottling and pale crest stripes, all
+procedural. build: `blender/cultivars/kabocha.py` — a drum body
+whose [noise texture](https://docs.blender.org/manual/en/latest/render/shader_nodes/textures/noise.html)
+drives both the color mix and a displace modifier, with a
+stretched second mapping for the stripes. spec:
+`refs/kabocha/README.md`.
 
 ![kabocha render](variants/kabocha.png) ![kabocha graded](../post/variants/kabocha.png)
 
-**b — thresholded [noise texture](https://docs.blender.org/manual/en/latest/render/shader_nodes/textures/noise.html)
-speckle.** broad mottling plus a hard color-ramp-isolated speckle
-over a matte principled base — procedural pattern work distinct
-from futsu's geometric warts. the map range (0.72-0.78) is the
-density dial: widen it for more freckles.
+**b — texture coordinates + mapping.** mottling without painting.
+(note: the musgrave shader node is gone in blender 4.4 — noise
+with distortion stands in; the legacy texture still feeds the
+displace modifier.)
 
 **p — channel mixer** (`image.adjustments.channelMixer
 {"red":[100,20,0,0],"green":[0,80,20,0],"blue":[0,0,100,0]}`).
-remaps green toward earth for botanical color problems: rows are
-four numbers (r,g,b,constant). compare the before/after — the
-green stops glowing and starts sitting.
+rows are four numbers (r,g,b,constant).
 
 ## how records are kept
 
-every cultivar above carries a build record in `blender/variants.md`:
-render command, what it checked against, and the fix applied when a
-round missed (face rescale on the flat ones, stem/tube scaling for
-the minis, bump-instead-of-geometry for futsu warts). nothing here
-is claimed that isn't rendered in `tutorial/variants/` beside it.
+every cultivar above carries a spec in `refs/<name>/README.md`:
+reference photos, measured proportions, construction plan, and the
+acceptance line (render matches the profile silhouette). nothing
+here is claimed that isn't rendered in `tutorial/variants/` beside
+it — each cultivar has a front png, a `-profile.png`, and a
+`.blend` from its own script.
 
 the tutorial text itself was reader-tested: two fresh pumpkins
 (plain-white, flat-tan) built from these steps alone, no script

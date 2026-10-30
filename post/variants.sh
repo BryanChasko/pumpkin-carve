@@ -20,9 +20,11 @@ photocraft-cli run "$O/cinderella.psd" \
 	--cmd layer.flattenImage \
 	--out "$O/cinderella.png"
 
-# 2. black futsu - threshold ink (graphic variant beside the color render)
+# 2. black futsu - brightness/contrast lift (the dark rind needs it;
+# threshold was tried: the op ignores the level in 0.17, output all black).
 photocraft-cli run "$V/black-futsu.png" \
-	--cmd image.adjustments.threshold --params '{"threshold":128}' \
+	--cmd image.adjustments.brightnessContrast \
+	--params '{"brightness":28,"contrast":18}' \
 	--out "$O/black-futsu.png"
 
 # 3. sugar pie - hue/saturation warm shift

@@ -38,7 +38,7 @@ Docs: [linked duplicates](https://docs.blender.org/manual/en/latest/scene_layout
 
 ## photocraft plan
 
-Feature: threshold adjustment layer for a high-contrast ink-style variant.
+Feature: invert for a ghost-negative variant.
 Docs: [photocraft](https://github.com/storytold/photocraft).
 
 ## acceptance

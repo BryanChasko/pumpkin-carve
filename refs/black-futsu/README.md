@@ -40,7 +40,8 @@ Docs: [geometry nodes](https://docs.blender.org/manual/en/latest/modeling/geomet
 
 ## photocraft plan
 
-Feature: channel mixer to separate the green-black base from buff cure tones.
+Feature: brightness/contrast lift for the dark rind (threshold tried,
+ignored its level in 0.17, so the lift stands in).
 Docs: [photocraft](https://github.com/storytold/photocraft).
 
 ## acceptance
