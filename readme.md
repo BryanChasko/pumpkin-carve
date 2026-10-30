@@ -1,99 +1,95 @@
 # pumpkin-carve: build a jack-o-lantern in blender, step by step
 
-a tutorial for building a stylized jack-o-lantern in blender 4.4 and
-finishing it in photocraft. each step comes two ways — by hand in the
-interface, or in annotated python — and ends with a working example
-scene you can open and take apart. start to finish is an afternoon;
-each step stands on its own if you only want one technique.
+model a stylized jack-o-lantern in blender 4.4 and finish it in
+photocraft. this page is the map; [the tutorial](tutorial/tutorial.md)
+is the walk. each step below matches one tutorial step, in order, with
+the same name — finish a step here, open the same step there for the
+full instructions, open its example scene to compare as you go.
 
 ![the finished pumpkin, slowly turning](assets/pumpkin-turntable-480x320.webp)
 
-## what you will make
+## start here
 
-- a ribbed pumpkin body with a bent, bark-ridged stem
-- a carved glowing face you can redesign freely
-- flat cartoon shading with a warm rim light
-- bold grease pencil outlines over the 3d forms
-- a graded final image, plus a printable inked drawing
+1. install blender 4.4 and photocraft 0.17 (links and scene setup are
+   step 0 of the tutorial).
+2. open [the tutorial](tutorial/tutorial.md) and keep it beside blender.
+3. work through the steps in order. each one offers two tracks — by
+   hand in the interface, or in annotated python — and they produce
+   the same pumpkin, so switch whenever one clicks better.
+4. stuck? every step ends with what your result should look like and
+   what to fix when it doesn't. there's an index at the end.
 
 ![the finished render](assets/pumpkin-hero-960x640.webp)
 
-## the walkthrough
+## the six steps
 
-full instructions, both tracks, in [the tutorial](tutorial/tutorial.md).
-the short version:
-
-**1. the ribbed body** — a squashed sphere with 15 grooves and real
-rind thickness. edge loops and solidify by hand; a polar grid with a
-per-vertex groove mask in code.
+**step 1 — the ribbed body.** a squashed sphere with 15 grooves and
+real rind thickness, plus a groove mask the shading will reuse.
+→ [tutorial step 1](tutorial/tutorial.md) ·
 [example scene](tutorial/examples/01-body.blend)
 
-![body stage](tutorial/examples/01-body.png)
+![after step 1](tutorial/examples/01-body.png)
 
-**2. stem, twig, leaves** — a bezier stem with bark ridges, a broken
-hollow tip, and leaves lying along a thin twig.
+**step 2 — stem, twig, leaves.** a bent stem with bark ridges, a
+broken hollow tip, leaves lying along a thin twig.
+→ [tutorial step 2](tutorial/tutorial.md) ·
 [example scene](tutorial/examples/02-stem.blend)
 
-![stem stage](tutorial/examples/02-stem.png)
+![after step 2](tutorial/examples/02-stem.png)
 
-**3. carve the face** — triangular eyes and a jagged grin, cut through
-the rind with booleans, lined with pale funnels and amber glow caps,
-lit from inside.
+**step 3 — carve the face.** triangular eyes and a jagged grin cut
+through the rind, lined with pale funnels and amber glow, lit from
+inside.
+→ [tutorial step 3](tutorial/tutorial.md) ·
 [example scene](tutorial/examples/03-carved-face.blend)
 
-![carved face stage](tutorial/examples/03-carved-face.png)
+![after step 3](tutorial/examples/03-carved-face.png)
 
-**4. shading layers** — toon color for flatness, the groove mask for
-form, noise streaks so large areas never look like plastic, and an
-emission rim that only fires on the silhouette. the tutorial lists
-the node tree socket by socket.
+**step 4 — shading layers.** toon color, groove shading from the
+step-1 mask, painterly streaks, and a rim that only fires on the
+silhouette. the tutorial lists the node tree socket by socket.
+→ [tutorial step 4](tutorial/tutorial.md)
 
-**5. ink it with grease pencil** — a line art modifier traces contour,
-crease, and intersection lines over the model. render on white with
-thicker lines for a coloring-page drawing of your own pumpkin.
+**step 5 — ink it with grease pencil.** line art outlines over the
+model, then a white-background drawing variant of your own pumpkin.
+→ [tutorial step 5](tutorial/tutorial.md) ·
 [example scene](tutorial/examples/04-inked-final.blend)
 
-![inked final stage](tutorial/examples/04-inked-final.png)
+![after step 5](tutorial/examples/04-inked-final.png)
 
 ![the inked drawing](assets/pumpkin-ink-960x640.webp)
 
-**6. grade it in photocraft** — photocraft is an open-source image
-editor written in rust: layers, masks, adjustment layers, real psd
-files, works offline. open the render, add vibrance and contrast,
-warm it with a photo filter, then bloom the highlights with a
-blurred screen-blend copy. `post/post.sh` runs the identical steps
-from the terminal, and `post/render_post.psd` keeps the grade as
-editable layers.
+**step 6 — grade it in photocraft.** vibrance and contrast, a warm
+filter, and a blurred screen-blend glow — in the app, or with the
+identical terminal commands in `post/post.sh`.
+→ [tutorial step 6](tutorial/tutorial.md)
 
-![the graded render](assets/pumpkin-framed-978x658.webp)
+![after step 6](assets/pumpkin-framed-978x658.webp)
 
-## try it now
+## prefer starting from a finished pumpkin?
 
-install blender 4.4 and photocraft 0.17, clone this repo, then either
-open `blender/scene.blend` and explore, or rebuild everything:
+open `blender/scene.blend` and take it apart, or rebuild it all:
 
 ```
 blender -b --factory-startup --python-exit-code 1 -P blender/build_pumpkin.py
 ```
 
-outputs land in `blender/exports/`. useful variations: `-- --toon`
-for the inked drawing, `-- --preview` for a small fast render while
-you iterate, `-- --stage=1` through `-- --stage=4` to regenerate
-the example scenes. prefer clicking? the tutorial's by-hand track
-builds the same pumpkin with no code at all.
+variations (`-- --toon`, `-- --preview`, `-- --stage=1` … `4`) are in
+the tutorial's "run the whole build" section. outputs land in
+`blender/exports/`.
 
 ## files
 
+- `tutorial/tutorial.md` — the walkthrough (start there)
+- `tutorial/examples/` — one scene and render per stage
 - `blender/build_pumpkin.py` — the full build as one annotated script
 - `blender/scene.blend` — the finished scene
-- `tutorial/tutorial.md` — the step-by-step walkthrough
-- `tutorial/examples/` — one scene and render per stage
-- `post/` — the photocraft grade: script, graded images, layered psd
-- `assets/` — the images on this page and the script that makes them
-- `refs/` — the look-target drawings the pumpkin was shaped against
+- `post/` — the step-6 grade: script, graded images, layered psd
+- `assets/` — the images on this page
+- `refs/` — the look-target drawings from tutorial step 3
 
-the svg below is hand-drawn vector — open
-`assets/pumpkin-flicker.svg` in a browser and watch the candlelight.
+one last piece: `assets/pumpkin-flicker.svg` is a hand-drawn vector
+of the same pumpkin. open it in a browser and watch the candlelight.
 
 ![flickering jack-o-lantern](assets/pumpkin-flicker.svg)
 
