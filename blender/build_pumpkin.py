@@ -31,7 +31,56 @@ for _a in sys.argv:
     if _a.startswith("--stage="):
         STAGE = int(_a.split("=", 1)[1])
 STAGE_NAMES = {1: "01-body", 2: "02-stem", 3: "03-carved-face", 4: "04-inked-final"}
-
+VARIANT = "generic"
+for _a in sys.argv:
+    if _a.startswith("--variant="):
+        VARIANT = _a.split("=", 1)[1]
+FACE_SCALE = 1.0  # outline scale factor for narrow/flat variant bodies
+FACE_DZ = 0.0     # vertical shift of face outlines, metres
+# Variant overrides: keys replace P entries. spec: blender/variants.md.
+# carved=False skips cuts, glow and ink (display whole, line art only).
+VARIANTS = {
+    "cinderella": dict(lobes=12, groove_depth=0.16, groove_pow=0.50,
+                       sx=1.0, sy=0.94, sz=0.55, R=0.34,
+                       rind_lit="#D8481C", rind_groove="#7A2408",
+                       glow_top="#FFB050", glow_bottom="#E07A10",
+                       face_scale=0.80, face_dz=-0.02, stem_scale=0.85),
+    "black-futsu": dict(lobes=10, groove_depth=0.20, sx=1.0, sy=0.92,
+                        sz=0.65, R=0.22, rind_lit="#2A3A26",
+                        rind_groove="#101A10", carved=False,
+                        stem_scale=0.65, wart_bump=0.50),
+    "sugar-pie": dict(lobes=10, groove_depth=0.07, sx=1.0, sy=0.94,
+                      sz=0.85, R=0.18, rind_lit="#F58A1E",
+                      rind_groove="#A85A10", face_scale=0.80,
+                      stem_scale=0.65),
+    "baby-boo": dict(lobes=12, groove_depth=0.09, sx=1.0, sy=0.94,
+                     sz=0.70, R=0.05, rind_lit="#E8E4DA",
+                     rind_groove="#B8B0A0", carved=False,
+                     stem_scale=0.22, groove_lines=False),
+    "porcelain-doll": dict(lobes=12, groove_depth=0.13, sx=1.02,
+                           sy=0.94, sz=0.62, R=0.32,
+                           rind_lit="#E8A0A8", rind_groove="#B07078",
+                           face_scale=0.90, stem_scale=0.88),
+    "jarrahdale": dict(lobes=12, groove_depth=0.15, sx=1.0, sy=0.94,
+                       sz=0.58, R=0.33, rind_lit="#7A8A94",
+                       rind_groove="#4A5A64", face_scale=0.80,
+                       face_dz=-0.02, stem_scale=0.85),
+    "lumina": dict(lobes=11, groove_depth=0.08, sx=1.0, sy=0.94,
+                   sz=0.78, R=0.30, rind_lit="#DFE6EA",
+                   rind_groove="#AEBAC0", face_scale=0.95),
+    "long-island-cheese": dict(lobes=14, groove_depth=0.10, sx=1.0,
+                               sy=0.94, sz=0.48, R=0.34,
+                               rind_lit="#C8A878", rind_groove="#8A6F4A",
+                               carved=False, stem_scale=0.72),
+    "harvest-moon": dict(lobes=13, groove_depth=0.12, sx=1.0, sy=0.94,
+                         sz=0.72, R=0.30, rind_lit="#E06A10",
+                         rind_groove="#5E2806", face_scale=0.95,
+                         stem_scale=0.95),
+    "kabocha": dict(lobes=10, groove_depth=0.14, sx=1.0, sy=0.94,
+                    sz=0.68, R=0.20, rind_lit="#2E4A2A",
+                    rind_groove="#1A2E1A", carved=False,
+                    stem_scale=0.60, kabocha_speckle=True),
+}
 P = dict(
     # body (metres, true scale for a large carving pumpkin)
     R=0.30, sx=1.0, sy=0.92, sz=0.75,
@@ -59,14 +108,28 @@ P = dict(
     # light rig
     intensity=0.90, key_az=45.0, key_el=38.0,
 )
+if VARIANT in VARIANTS:
+    P.update(VARIANTS[VARIANT])
+CARVED = P.get("carved", True)
+FACE_SCALE = P.pop("face_scale", 1.0)
+FACE_DZ = P.pop("face_dz", 0.0)
 
 # face cut-out outlines in pumpkin-local metres: (x right, z up), front faces -Y.
 # Pixel-measured from hero.jpg crops (frame fractions mapped through the
 # body box): both eyes are large tall triangles of similar screen size; the
 # right eye leans right and wraps the side rib. Grin: shallow 3-V upper
 # edge, 3 upward lower teeth, thin upswept pointed corner tips.
-EYE_L = [(-0.055, 0.342), (0.022, 0.258), (-0.104, 0.258)]
-EYE_R = [(0.185, 0.340), (0.205, 0.282), (0.078, 0.270)]
+# Variants rescale them: _face() applies FACE_SCALE around the outline
+# centre, then FACE_DZ, so narrow/flat bodies keep the face on the rind.
+def _face(poly):
+    cx = sum(p[0] for p in poly) / len(poly)
+    cz = sum(p[1] for p in poly) / len(poly)
+    return [(cx + (x - cx) * FACE_SCALE, cz + (z - cz) * FACE_SCALE + FACE_DZ)
+            for x, z in poly]
+_EYE_L = [(-0.055, 0.342), (0.022, 0.258), (-0.104, 0.258)]
+_EYE_R = [(0.185, 0.340), (0.205, 0.282), (0.078, 0.270)]
+EYE_L = _face(_EYE_L)
+EYE_R = _face(_EYE_R)
 # Both polylines are strictly x-monotone with upper above lower at every
 # station (min margin 0.010 at the interlocking teeth), so the closed
 # polygon cannot self-intersect.
@@ -76,7 +139,7 @@ GRIN_UPPER = [(-0.165, 0.189), (-0.100, 0.130), (-0.039, 0.158),
 GRIN_LOWER = [(0.244, 0.168), (0.229, 0.104), (0.165, 0.125),
               (0.096, 0.090), (0.040, 0.125), (-0.021, 0.090),
               (-0.077, 0.125), (-0.133, 0.090), (-0.156, 0.162)]
-GRIN = GRIN_UPPER + GRIN_LOWER
+GRIN = _face(GRIN_UPPER + GRIN_LOWER)
 
 
 def build_body(name, mat, col, r_scale=1.0):
@@ -85,11 +148,15 @@ def build_body(name, mat, col, r_scale=1.0):
     segs, rings = P["segs"], P["rings"]
     phase = -math.pi / 2 - math.pi / N  # a groove centred on the front (-Y)
     CZ = R * P["sz"]
+    # crater and sit-flat scale with the body so minis keep their proportions
+    CR = R / 0.30
+    crater_depth, crater_w = P["crater_depth"] * CR, P["crater_w"] * CR
+    sit = 0.02 * CR
     bm = bmesh.new()
     glay = bm.verts.layers.float.new("groove")
     bot = bm.verts.new((0.0, 0.0, 0.0))
     bot[glay] = 0.0
-    top = bm.verts.new((0.0, 0.0, 2 * CZ - P["crater_depth"]))
+    top = bm.verts.new((0.0, 0.0, 2 * CZ - crater_depth))
     top[glay] = 0.0
     grid = [[None] * segs for _ in range(rings + 1)]
     for j in range(1, rings):
@@ -104,9 +171,9 @@ def build_body(name, mat, col, r_scale=1.0):
             z = zc * R * P["sz"] + CZ
             if zc > 0:  # shoulder dip around the stem
                 rh = math.hypot(x, y)
-                z -= P["crater_depth"] * math.exp(-((rh / P["crater_w"]) ** 2))
-            if z < 0.02:  # slight bottom flatten so it sits
-                z = 0.02 + (z - 0.02) * 0.45
+                z -= crater_depth * math.exp(-((rh / crater_w) ** 2))
+            if z < sit:  # slight bottom flatten so it sits
+                z = sit + (z - sit) * 0.45
             v = bm.verts.new((x, y, z))
             v[glay] = g
             grid[j][i] = v
@@ -130,6 +197,9 @@ def surface_point(a, phi, phase):
     """Pumpkin surface position for azimuth a / polar phi (same math as build_body)."""
     R = P["R"]
     CZ = R * P["sz"]
+    CR = R / 0.30
+    crater_depth, crater_w = P["crater_depth"] * CR, P["crater_w"] * CR
+    sit = 0.02 * CR
     sh, zc = math.sin(phi), -math.cos(phi)
     g = (0.5 - 0.5 * math.cos(P["lobes"] * (a - phase))) ** P["groove_pow"]
     rr = R * (1 - P["groove_depth"] * g) * sh
@@ -138,9 +208,9 @@ def surface_point(a, phi, phase):
     z = zc * R * P["sz"] + CZ
     if zc > 0:
         rh = math.hypot(x, y)
-        z -= P["crater_depth"] * math.exp(-((rh / P["crater_w"]) ** 2))
-    if z < 0.02:
-        z = 0.02 + (z - 0.02) * 0.45
+        z -= crater_depth * math.exp(-((rh / crater_w) ** 2))
+    if z < sit:
+        z = sit + (z - sit) * 0.45
     return (x, y, z)
 
 
@@ -401,6 +471,22 @@ def rind_material():
     diff.inputs["Size"].default_value = P["toon_size"]
     diff.inputs["Smooth"].default_value = 0.06
     nt.links.new(crown.outputs["Result"], diff.inputs["Color"])
+    if P.get("kabocha_speckle", False):  # kabocha: sparse light speckles
+        sp = nt.nodes.new("ShaderNodeTexNoise")
+        sp.inputs["Scale"].default_value = 60.0
+        sp.inputs["Detail"].default_value = 1.0
+        nt.links.new(mp.outputs["Vector"], sp.inputs["Vector"])
+        thr = nt.nodes.new("ShaderNodeMapRange")
+        thr.clamp = True
+        thr.inputs["From Min"].default_value = 0.72
+        thr.inputs["From Max"].default_value = 0.78
+        nt.links.new(sp.outputs["Fac"], thr.inputs["Value"])
+        spmix = nt.nodes.new("ShaderNodeMix")
+        spmix.data_type = "RGBA"
+        spmix.inputs["B"].default_value = H.color("#C8B060")
+        nt.links.new(crown.outputs["Result"], spmix.inputs["A"])
+        nt.links.new(thr.outputs["Result"], spmix.inputs["Factor"])
+        nt.links.new(spmix.outputs["Result"], diff.inputs["Color"])
     gloss = nt.nodes.new("ShaderNodeBsdfToon")
     gloss.component = "GLOSSY"
     gloss.inputs["Color"].default_value = H.color("#E06A10")
@@ -408,6 +494,17 @@ def rind_material():
     gloss.inputs["Smooth"].default_value = 0.2
     nt.links.new(bump.outputs["Normal"], diff.inputs["Normal"])
     nt.links.new(bump.outputs["Normal"], gloss.inputs["Normal"])
+    if P.get("wart_bump", 0):  # black futsu: voronoi warts over the rind
+        vno = nt.nodes.new("ShaderNodeTexVoronoi")
+        vno.feature = "F1"
+        vno.inputs["Scale"].default_value = 18.0
+        nt.links.new(mp.outputs["Vector"], vno.inputs["Vector"])
+        wb = nt.nodes.new("ShaderNodeBump")
+        wb.inputs["Strength"].default_value = P["wart_bump"]
+        nt.links.new(vno.outputs["Distance"], wb.inputs["Height"])
+        nt.links.new(bump.outputs["Normal"], wb.inputs["Normal"])
+        nt.links.new(wb.outputs["Normal"], diff.inputs["Normal"])
+        nt.links.new(wb.outputs["Normal"], gloss.inputs["Normal"])
     sheen = nt.nodes.new("ShaderNodeMixShader")
     sheen.inputs["Fac"].default_value = 0.10
     nt.links.new(diff.outputs["BSDF"], sheen.inputs[1])
@@ -680,8 +777,10 @@ def stem_material():
 
 
 def build_stem(col, stem_mat, twig_mat, leaf_mat):
-    pts = [(x, y, z) for x, y, z, _ in STEM_PATH]
-    radii = [r for _, _, _, r in STEM_PATH]
+    # variants shrink the whole stem to their body (see blender/variants.md)
+    ss = P.get("stem_scale", 1.0)
+    pts = [(x * ss, y * ss, z * ss) for x, y, z, _ in STEM_PATH]
+    radii = [r * ss for _, _, _, r in STEM_PATH]
     stem, centers, end_tg = sweep_mesh("Stem", pts, radii, n_sides=14,
                                        mat=stem_mat, col=col,
                                        cap_start=True, cap_end=False,
@@ -708,23 +807,28 @@ def build_stem(col, stem_mat, twig_mat, leaf_mat):
     H.assign(plug, twig_mat)
     parts.append(plug)
     # single sideways twiggy shoot + one fork, swept thin meshes
-    twig, _, _ = sweep_mesh("Twig", TWIG_MAIN, TWIG_MAIN_R, n_sides=7,
-                            mat=twig_mat, col=col)
-    fork, _, _ = sweep_mesh("TwigFork", TWIG_FORK, TWIG_FORK_R, n_sides=7,
-                            mat=twig_mat, col=col)
+    # (scaled with the stem so minis keep their proportions)
+    def _sp(pts, rr):
+        return ([(x * ss, y * ss, z * ss) for x, y, z in pts],
+                [r * ss for r in rr])
+    twig, _, _ = sweep_mesh("Twig", *_sp(TWIG_MAIN, TWIG_MAIN_R),
+                            n_sides=7, mat=twig_mat, col=col)
+    fork, _, _ = sweep_mesh("TwigFork", *_sp(TWIG_FORK, TWIG_FORK_R),
+                            n_sides=7, mat=twig_mat, col=col)
     parts += [twig, fork]
     # small pointed leaflets lying along the shoot, dark olive (never pale,
     # never upright: upright or pale reads as spikes, not leaves)
-    leaf_shape = [(0, 0.013), (0.0056, 0.0016),
-                  (0.0019, -0.013), (-0.0056, 0.0016)]
+    leaf_shape = [(0, 0.013 * ss), (0.0056 * ss, 0.0016 * ss),
+                  (0.0019 * ss, -0.013 * ss), (-0.0056 * ss, 0.0016 * ss)]
     for k, (loc, rot) in enumerate((
             ((-0.062, -0.010, 0.470), (90, 0, -25)),
             ((-0.098, -0.012, 0.473), (90, 0, 35)),
             ((-0.080, -0.010, 0.489), (90, 0, -10)),
             ((-0.114, -0.011, 0.470), (90, 0, 55)),
     )):
-        leaf = H.add_extrusion(f"Leaf{k}", leaf_shape, depth=0.0015,
+        leaf = H.add_extrusion(f"Leaf{k}", leaf_shape, depth=0.0015 * ss,
                                mat=leaf_mat, collection=col)
+        loc = (loc[0] * ss, loc[1] * ss, loc[2] * ss)
         leaf.location = loc
         leaf.rotation_euler = [math.radians(a) for a in rot]
         parts.append(leaf)
@@ -829,10 +933,13 @@ def main():
     body = build_body("Pumpkin", rind, col)
     flesh = H.emission_material("Flesh", P["flesh_color"], P["flesh_strength"])
     add_shell(body, flesh)
-    if STAGE >= 3:
+    groove = H.emission_material("GrooveLine", "#2A1206", 1.0)
+    if P.get("groove_lines", True):
+        build_groove_lines(groove)
+    if STAGE >= 3 and CARVED:
         cut_face(body)
-        groove_mat = H.emission_material("GrooveLine", "#2A1206", 1.0)
-        build_groove_lines(groove_mat)
+        if P.get("groove_lines", True):
+            build_groove_lines(groove)
         glow_col = H.collection("GlowParts")
         build_cut_bevels(col, glow_col, flesh,
                            {"EyeL": eye_glow, "EyeR": eye_glow, "Grin": grin_glow})
@@ -869,6 +976,18 @@ def main():
         H.report()
         return
 
+    if VARIANT != "generic" and STAGE == 99 and not (PREVIEW or TOON or TURNTABLE):
+        vdir = os.path.join(ROOT, "tutorial", "variants")
+        os.makedirs(vdir, exist_ok=True)
+        ex = os.path.join(vdir, VARIANT)
+        H.set_render(engine="CYCLES", resolution=(480, 320), samples=10,
+                     view_transform="Standard", exposure=P["exposure"], device="CPU")
+        if CARVED:
+            add_bloom()
+        H.render_still(ex + ".png", background=P["bg"])
+        H.save_blend(ex + ".blend")
+        H.report()
+        return
     if PREVIEW:
         H.set_render(engine="CYCLES", resolution=(480, 320), samples=10,
                      view_transform="Standard", exposure=P["exposure"], device="CPU")
