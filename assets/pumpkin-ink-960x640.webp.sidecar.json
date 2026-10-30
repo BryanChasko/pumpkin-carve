@@ -1,7 +1,0 @@
-{
-  "source": "pumpkin-ink-960x640.webp",
-  "sha256": "394bbffc35cb307f7372d1c9be47154f6380a99df214cae13606d3ec22946fb1",
-  "bytes": 252880,
-  "tool": "ffmpeg version 6.1.1-3ubuntu5+esm15 Copyright (c) 2000-2023 the FFmpeg developers",
-  "blend": "scene.blend cpu cycles"
-}

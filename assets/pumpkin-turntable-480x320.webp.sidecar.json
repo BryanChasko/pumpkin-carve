@@ -1,7 +1,0 @@
-{
-  "source": "assets/pumpkin-turntable-480x320.webp",
-  "sha256": "2020301f79c84c16f8eb1c8f2a91096ef0b1e5e7e3cef8881db4e350365707a9",
-  "bytes": 289064,
-  "tool": "PIL 12.2 webp, 24 frames x 200ms",
-  "note": "slow spin, 4.8s per turn"
-}

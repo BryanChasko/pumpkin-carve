@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""repo art helpers: ascii pumpkin + brand-framed hero. deterministic."""
+"""makes the readme art: ascii pumpkin + framed hero image."""
 import os
 from PIL import Image, ImageOps
 

@@ -2,7 +2,7 @@
 
 Look: toon-shaded rind (Toon BSDF + groove shading layers + warm rim), real
 boolean-cut glowing eyes/grin with an emissive core, grease-pencil Line Art
-outlines, dark background. CPU Cycles, headless rebuildable.
+outlines, dark background. CPU Cycles. Tutorial: tutorial/tutorial.md.
 
 Rebuild: blender -b --factory-startup --python-exit-code 1 -P blender/build_pumpkin.py [-- --preview]
 """
@@ -191,9 +191,8 @@ def build_cut_bevels(col, glow_col, wall_mat, cap_mats):
     """Pale flesh bevel-wall funnels + amber glow caps inside every carved hole.
 
     The outer ring sits exactly on the boolean hole outline and is recessed
-    just inside the rind surface, so by construction no wall can poke out
-    past the cuts (the old oversized outer ring showed as solid tan flaps
-    outside the grin corners). The walls slope inward to a smaller opening
+    just inside the rind surface, so no wall pokes out past the cuts.
+    The walls slope inward to a smaller opening
     capped by the per-opening emissive gradient; the wide pale ring plus
     the deep funnel reads as a true carved opening with real depth.
     """
@@ -415,8 +414,8 @@ def rind_material():
     nt.links.new(gloss.outputs["BSDF"], sheen.inputs[2])
     # warm rim on the outer right silhouette only: steep ramp over X in
     # [0.90, 1.0] times a grazing-view term, built from commutative math ops
-    # only (MapRange proved unreliable for below-range inputs: it gated to
-    # the wrong side). A wider gate paints a hard white streak down a
+    # only (plain math nodes clamp predictably at the edges).
+    # A wider gate paints a hard white streak down a
     # mid-surface lobe flank; the facing term keeps only the true limb.
     geo = nt.nodes.new("ShaderNodeNewGeometry")
     sep = nt.nodes.new("ShaderNodeSeparateXYZ")
@@ -715,7 +714,7 @@ def build_stem(col, stem_mat, twig_mat, leaf_mat):
                             mat=twig_mat, col=col)
     parts += [twig, fork]
     # small pointed leaflets lying along the shoot, dark olive (never pale,
-    # never upright: the old pale diamond row read as a spike crest)
+    # never upright: upright or pale reads as spikes, not leaves)
     leaf_shape = [(0, 0.013), (0.0056, 0.0016),
                   (0.0019, -0.013), (-0.0056, 0.0016)]
     for k, (loc, rot) in enumerate((

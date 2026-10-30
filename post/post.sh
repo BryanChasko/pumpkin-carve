@@ -1,5 +1,5 @@
 #!/bin/bash
-# post.sh - spooky grade for the pumpkin render, headless photocraft engine.
+# post.sh - spooky grade for the pumpkin render (photocraft command line).
 # needs: photocraft-cli 0.17+ (this box: ~/.local/opt/artcraft/*/bin)
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

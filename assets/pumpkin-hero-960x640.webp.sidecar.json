@@ -1,7 +1,0 @@
-{
-  "source": "pumpkin-hero-960x640.webp",
-  "sha256": "45286dc42ba2cd1f90abb3e02a4b5cd5a7e9c5421940ac1efbe6c98bad6e0d8c",
-  "bytes": 48014,
-  "tool": "ffmpeg version 6.1.1-3ubuntu5+esm15 Copyright (c) 2000-2023 the FFmpeg developers",
-  "blend": "scene.blend cpu cycles"
-}
