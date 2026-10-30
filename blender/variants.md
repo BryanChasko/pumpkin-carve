@@ -16,7 +16,7 @@ rareseeds (jarrahdale), victory seeds + nichols nursery (cinderella /
 rouge vif), specialty produce (sugar pie, kabocha), seed needs +
 tomorrow seeds (baby boo), reimer seeds (porcelain doll), johnny's
 (jarrahdale note + long island cheese), tomorrow seeds (lumina),
-pumpkinpatches master list (harvest moon), the kitchn winter squash
+pumpkinpatches cultivar index (harvest moon), the kitchn winter squash
 (kabocha roundup).
 
 ## 1. cinderella (rouge vif d'etampes)
@@ -34,7 +34,11 @@ the carriage pumpkin.
 - photocraft feature: curves adjustment layer
   (`layer.newAdjustmentLayer.curves`), red-channel s-curve. layered
   psd kept.
-- build record: _______________________________
+- build record: cinderella render passes all four spec checks
+  (flattened red body, deep ribs, face inside the rind, glow
+  red-amber). face rescaled 0.80 after round one overflowed the
+  silhouette. sha d68621… renders: t/variants/cinderella.png,
+  post/variants/cinderella.png + .psd.
 
 ## 2. black futsu
 
@@ -50,7 +54,12 @@ curing toward warm orange-buff.
   texture. fallback (if the rim tears): bump only, recorded here.
 - photocraft feature: threshold (`image.adjustments.threshold`) —
   a one-bit woodcut version beside the color render.
-- build record: _______________________________
+- build record: black futsu passes (squat dark block, real
+  voronoi warts, no carve, ink reads at output size). wart math is
+  bump-only — full displace geometry tore at the solidify rim, so
+  bump is the documented fallback. renders:
+  t/variants/black-futsu.png, post/variants/black-futsu.png
+  (threshold woodcut beside it).
 
 ## 3. sugar pie
 
@@ -67,7 +76,7 @@ and a thick ridged green-brown stem.
 - photocraft feature: hue/saturation
   (`image.adjustments.hueSaturation`), warm shift +8/+10: pie
   orange to porch orange.
-- build record: _______________________________
+- build record: sugar pie passes (small neat round body, shallow ridges, classic face scaled to fit, graded warm. renders: t/variants/sugar-pie.png, post/variants/sugar-pie.png.)
 
 ## 4. baby boo
 
@@ -82,7 +91,7 @@ cluster, never a soloist.
   scale). docs: geometry nodes introduction.
 - photocraft feature: invert (`image.adjustments.invert`) — the
   ghost-negative graphic beside the color render.
-- build record: _______________________________
+- build record: baby boo passes (mini white cluster subject: crater/stem/tubes rescaled to the 45mm body after two framing misses, groove tubes dropped for the mini. renders: t/variants/baby-boo.png, post/variants/baby-boo.png (invert ghost beside it).)
 
 ## 5. porcelain doll
 
@@ -98,7 +107,7 @@ pale-to-rich salmon pink rind, glossy for a pumpkin, 10-25 lb.
 - photocraft feature: outer glow layer style
   (`layer.layerStyle.outerGlow`), low-opacity pink halo, kept live
   in the layered psd.
-- build record: _______________________________
+- build record: porcelain doll passes (pink blocky body, soft round-eye face, outer glow style kept live. renders: t/variants/porcelain-doll.png, post/variants/porcelain-doll.png + .psd.)
 
 ## 6. jarrahdale
 
@@ -116,7 +125,7 @@ quotes it).
 - photocraft feature: gradient map
   (`layer.newAdjustmentLayer.gradientMap`), slate-to-amber
   duotone check beside the color version.
-- build record: _______________________________
+- build record: jarrahdale passes (blue-grey flattened drum, orange glow keeps the complement. renders: t/variants/jarrahdale.png, post/variants/jarrahdale.png + .psd (gradient map duotone).)
 
 ## 7. lumina
 
@@ -133,7 +142,7 @@ canvas of the family.
 - photocraft feature: photo filter, cooling
   (`image.adjustments.photoFilter`, `#bfd9e8` at 15%) — moonlit
   white, opposite the generic's warm grade.
-- build record: _______________________________
+- build record: lumina passes (ivory smooth body, amber glow, cool grade opposite the generic. renders: t/variants/lumina.png, post/variants/lumina.png.)
 
 ## 8. long island cheese
 
@@ -150,7 +159,7 @@ stem, 6-10 lb.
 - photocraft feature: color balance
   (`image.adjustments.colorBalance`) — warm midtones, held
   shadows.
-- build record: _______________________________
+- build record: long island cheese passes (flat tan wheel, uncarved, thin ink. stem rescaled to the squat body. renders: t/variants/long-island-cheese.png, post/variants/long-island-cheese.png.)
 
 ## 9. harvest moon
 
@@ -168,7 +177,7 @@ polished sibling.
   point in, gamma 0.95; crushes the night while holding rind
   detail. paired with cinderella's curves, the two teach the
   difference.
-- build record: _______________________________
+- build record: harvest moon passes (dark-orange round carve, design sibling of the generic with deeper groove banding. renders: t/variants/harvest-moon.png, post/variants/harvest-moon.png.)
 
 ## 10. kabocha
 
@@ -187,7 +196,7 @@ speckling, 2-5 lb.
 - photocraft feature: channel mixer
   (`image.adjustments.channelMixer`) — green channel remap toward
   earth for botanical color problems.
-- build record: _______________________________
+- build record: kabocha passes (dark green matte body with speckle mix over the rind, uncarved still-life subject. speckle threshold 0.72-0.78 at scale 60. renders: t/variants/kabocha.png, post/variants/kabocha.png.)
 
 ## record-as-you-go protocol
 

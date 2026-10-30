@@ -5,6 +5,7 @@ boolean-cut glowing eyes/grin with an emissive core, grease-pencil Line Art
 outlines, dark background. CPU Cycles. Tutorial: tutorial/tutorial.md.
 
 Rebuild: blender -b --factory-startup --python-exit-code 1 -P blender/build_pumpkin.py [-- --preview]
+Variant:  ... -- --variant=cinderella   (specs: blender/variants.md)
 """
 import math
 import os

@@ -59,6 +59,25 @@ annotated python), full instructions in
   </tr>
 </table>
 
+## ten more pumpkins
+
+same builder, ten cultivars — `-- --variant=<name>`. each pairs one
+blender technique with one photocraft feature. full briefs, render
+records, and doc links live in the [cultivar gallery](tutorial/tutorial.md#ten-more-pumpkins-cultivar-gallery).
+
+|                                                                                       | pumpkin                                   | blender feature                    | photocraft feature               |
+| ------------------------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------- | -------------------------------- |
+| <img src="post/variants/cinderella.png" width="160" alt="cinderella">                 | cinderella — flat red heirloom, carved    | displace ribs                      | curves s-curve, live psd         |
+| <img src="post/variants/black-futsu.png" width="160" alt="black futsu">               | black futsu — dark warted block, uncarved | voronoi bump (documented fallback) | threshold woodcut                |
+| <img src="post/variants/sugar-pie.png" width="160" alt="sugar pie">                   | sugar pie — small neat carver             | array trio exercise                | hue/sat warm shift               |
+| <img src="post/variants/baby-boo.png" width="160" alt="baby boo">                     | baby boo — mini white ghost               | geometry-nodes cluster exercise    | invert negative                  |
+| <img src="post/variants/porcelain-doll.png" width="160" alt="porcelain doll">         | porcelain doll — pink glossy block        | toward clearcoat (exercise)        | outer glow layer style, live psd |
+| <img src="post/variants/jarrahdale.png" width="160" alt="jarrahdale">                 | jarrahdale — blue-grey drum               | screw-lathe rebuild exercise       | gradient-map duotone, live psd   |
+| <img src="post/variants/lumina.png" width="160" alt="lumina">                         | lumina — ivory carver                     | toward subsurface (exercise)       | cooling photo filter             |
+| <img src="post/variants/long-island-cheese.png" width="160" alt="long island cheese"> | long island cheese — flat tan wheel       | spin + taper rebuild exercise      | warm color balance               |
+| <img src="post/variants/harvest-moon.png" width="160" alt="harvest moon">             | harvest moon — dark orange carver         | freestyle vs line art              | levels black point               |
+| <img src="post/variants/kabocha.png" width="160" alt="kabocha">                       | kabocha — speckled green still-life       | noise speckle                      | channel mixer                    |
+
 open `blender/scene.blend` to take the finished pumpkin apart, or
 rebuild it all:
 
