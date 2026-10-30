@@ -31,7 +31,7 @@ P = dict(
     R=0.26, sx=1.0, sy=0.95, sz=0.50,
     lobes=17, groove_depth=0.08, groove_pow=0.60,
     segs=170, rings=80,
-    rind="#D9A960", groove_c="#9A7440",
+    rind="#C08A3E", groove_c="#8A6430",
     stem_c="#7A7A45",
     well_r=0.060, well_depth=0.055,
     bg="#909399", exposure=1.0, lens=70, margin=1.12,
@@ -107,10 +107,34 @@ def cut_well(body, col, topz):
 
 
 def build_stem(name, mat, col, topz):
-    stem = H.add_cylinder(name, 0.022, 0.11, radius_top=0.015,
-                          vertices=12, mat=mat, collection=col)
-    stem.location = (0.0, 0.0, topz - 0.015)
-    return [stem]
+    # short woody stem: 7 bark ridges rising out of the well
+    sides, rings, h = 28, 4, 0.11
+    r0, r1 = 0.022, 0.015
+    bm = bmesh.new()
+    grid = []
+    for j in range(rings + 1):
+        f = j / rings
+        r = r0 + (r1 - r0) * f
+        ring = []
+        for i in range(sides):
+            a = 2 * math.pi * i / sides
+            rr = r * (1 + 0.12 * math.sin(7 * a + f * 2.0))
+            ring.append(bm.verts.new((rr * math.cos(a), rr * math.sin(a),
+                                      f * h)))
+        grid.append(ring)
+    for j in range(rings):
+        for i in range(sides):
+            k = (i + 1) % sides
+            bm.faces.new((grid[j][i], grid[j][k], grid[j + 1][k],
+                          grid[j + 1][i]))
+    bm.faces.new(list(grid[0]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    obj = bpy.data.objects.new(name, H.mesh_from_bmesh(name, bm))
+    H.link(obj, col)
+    H.assign(obj, mat)
+    H.shade_smooth(obj, angle=40)
+    obj.location = (0.0, 0.0, topz - 0.015)
+    return [obj]
 
 
 def rind_material():

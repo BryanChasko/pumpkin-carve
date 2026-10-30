@@ -106,8 +106,8 @@ def rind_material():
     nz.inputs["Detail"].default_value = 2.0
     ramp = nt.nodes.new("ShaderNodeMapRange")
     ramp.clamp = True
-    ramp.inputs["From Min"].default_value = 0.65
-    ramp.inputs["From Max"].default_value = 0.82
+    ramp.inputs["From Min"].default_value = 0.58
+    ramp.inputs["From Max"].default_value = 0.78
     nt.links.new(nz.outputs["Fac"], ramp.inputs["Value"])
     cmix = nt.nodes.new("ShaderNodeMix")
     cmix.data_type = "RGBA"
@@ -172,12 +172,17 @@ def scatter_warts(body, proto):
 
 
 def build_stem(name, mat, col):
-    # hard angular tan stem: hexagonal prism reads faceted, slight lean
-    stem = H.add_cylinder(name, 0.026, 0.125, radius_top=0.016,
+    # hard angular tan stem: hexagonal prism reads faceted, lean,
+    # with a ridged bark band at the base
+    stem = H.add_cylinder(name, 0.030, 0.135, radius_top=0.018,
                           vertices=6, mat=mat, collection=col)
-    stem.location = (0.012, 0.0, 2 * P["R"] * P["sz"] + 0.045)
+    stem.location = (0.012, 0.0, 2 * P["R"] * P["sz"] + 0.048)
     stem.rotation_euler = (0.0, math.radians(18), math.radians(15))
-    return [stem]
+    collar = H.add_cylinder(name + "Collar", 0.040, 0.030, radius_top=0.032,
+                            vertices=12, mat=mat, collection=col)
+    collar.location = (0.004, 0.0, 2 * P["R"] * P["sz"] + 0.005)
+    collar.rotation_euler = (0.0, math.radians(6), 0.0)
+    return [stem, collar]
 
 
 def render_view(cam, body, parts, azimuth, path):

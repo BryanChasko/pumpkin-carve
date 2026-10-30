@@ -21,7 +21,7 @@ Very flat wide fruit, concave crown, deep wide ribs, red-orange thick skin.
 | ------------------- | --------------------------------- |
 | proportions (w x h) | 3.0 x 1.0                         |
 | ribs                | 14, deep, rounded                 |
-| base color          | #c33d0f                           |
+| base color          | #a82e0c (renders to ref red)      |
 | highlight           | #e8641b                           |
 | stem                | short corky cylinder, tan #a08b62 |
 | crown               | concave dip, stem sits below rim  |

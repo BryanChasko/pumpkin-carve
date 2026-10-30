@@ -32,7 +32,7 @@ PREVIEW = "--preview" in sys.argv
 P = dict(
     lobes=14, groove_depth=0.16, groove_pow=0.50,
     segs=196,
-    rind_lit="#C33D0F", rind_groove="#7A2408",
+    rind_lit="#A82E0C", rind_groove="#5E1C06",
     stem_color="#A08B62", stem_dark="#5E4A2E",
     bg="#909399", exposure=1.0,
     lens=70, margin=1.12,
@@ -99,15 +99,64 @@ def rind_material():
 
 
 def build_stem(name, mat, col):
-    # short corky tan stem: tapered cylinder, slight lean, flared base
-    stem = H.add_cylinder(name, 0.028, 0.055, radius_top=0.020,
-                          vertices=24, mat=mat, collection=col)
-    stem.location = (0.006, 0.0, 0.160 + 0.022)
-    stem.rotation_euler = (0.0, math.radians(7), 0.0)
+    # short corky tan stem: 8 bark ridges, slight lean, flared base
+    sides, rings, h = 32, 5, 0.070
+    r0, r1 = 0.030, 0.021
+    bm = bmesh.new()
+    grid = []
+    for j in range(rings + 1):
+        f = j / rings
+        r = r0 + (r1 - r0) * f
+        ring = []
+        for i in range(sides):
+            a = 2 * math.pi * i / sides
+            rr = r * (1 + 0.12 * math.sin(8 * a + f * 2.0))
+            ring.append(bm.verts.new((rr * math.cos(a), rr * math.sin(a),
+                                      f * h)))
+        grid.append(ring)
+    for j in range(rings):
+        for i in range(sides):
+            k = (i + 1) % sides
+            bm.faces.new((grid[j][i], grid[j][k], grid[j + 1][k],
+                          grid[j + 1][i]))
+    bm.faces.new(list(grid[0]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    obj = bpy.data.objects.new(name, H.mesh_from_bmesh(name, bm))
+    H.link(obj, col)
+    H.assign(obj, mat)
+    H.shade_smooth(obj, angle=40)
+    obj.location = (0.006, 0.0, 0.160)
+    obj.rotation_euler = (0.0, math.radians(7), 0.0)
     base = H.add_cylinder(name + "Base", 0.042, 0.020, radius_top=0.030,
                           vertices=24, mat=mat, collection=col)
     base.location = (0.0, 0.0, 0.165)
-    return [stem, base]
+    return [obj, base]
+
+
+def stem_material():
+    mat = H.material("CinderellaStemBark", "#8A6F45", roughness=0.95)
+    nt = mat.node_tree
+    bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
+    base = bsdf.inputs.get("Base Color") or bsdf.inputs[0]
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    mp = nt.nodes.new("ShaderNodeMapping")
+    mp.inputs["Scale"].default_value = (6.0, 6.0, 14.0)
+    nt.links.new(tc.outputs["Object"], mp.inputs["Vector"])
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 8.0
+    nz.inputs["Detail"].default_value = 3.0
+    nt.links.new(mp.outputs["Vector"], nz.inputs["Vector"])
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.inputs["A"].default_value = H.color("#6E5636")
+    mix.inputs["B"].default_value = H.color("#A68D5E")
+    nt.links.new(nz.outputs["Fac"], mix.inputs["Factor"])
+    nt.links.new(mix.outputs["Result"], base)
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.6
+    nt.links.new(nz.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    return mat
 
 
 def render_view(cam, body, parts, azimuth, path):
@@ -120,7 +169,7 @@ def main():
     H.reset_scene()
     col = H.collection("Cinderella")
     rind = rind_material()
-    stem_mat = H.material("CinderellaStem", P["stem_color"], roughness=0.9)
+    stem_mat = stem_material()
     body = build_body("Cinderella", rind, col)
     parts = build_stem("CinderellaStem", stem_mat, col)
     H.studio_lighting(target=[body] + parts, key_azimuth=-40,

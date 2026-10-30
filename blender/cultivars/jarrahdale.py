@@ -28,7 +28,7 @@ VDIR = os.path.join(ROOT, "tutorial", "variants")
 PREVIEW = "--preview" in sys.argv
 
 P = dict(
-    lobes=13, groove_depth=0.15, groove_pow=0.55,
+    lobes=13, groove_depth=0.18, groove_pow=0.55,
     segs=182,
     rind="#5F7482", groove_c="#3A4750", bloom="#93A3B0",
     stem_c="#9A7F57",
@@ -99,11 +99,40 @@ def rind_material():
     drv.operation = "MULTIPLY"
     nt.links.new(attr.outputs["Fac"], drv.inputs[0])
     drv.inputs[1].default_value = 0.30
-    nt.links.new(drv.outputs["Value"], bmix.inputs["Factor"])
+    # patchy bloom: break the valley mask with coarse noise
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    mp2 = nt.nodes.new("ShaderNodeMapping")
+    mp2.inputs["Scale"].default_value = (3.0, 3.0, 3.0)
+    nt.links.new(tc.outputs["Object"], mp2.inputs["Vector"])
+    nz2 = nt.nodes.new("ShaderNodeTexNoise")
+    nz2.inputs["Scale"].default_value = 3.0
+    nz2.inputs["Detail"].default_value = 2.0
+    nt.links.new(mp2.outputs["Vector"], nz2.inputs["Vector"])
+    mr2 = nt.nodes.new("ShaderNodeMapRange")
+    mr2.clamp = True
+    mr2.inputs["From Min"].default_value = 0.4
+    mr2.inputs["From Max"].default_value = 1.0
+    nt.links.new(nz2.outputs["Fac"], mr2.inputs["Value"])
+    patch = nt.nodes.new("ShaderNodeMath")
+    patch.operation = "MULTIPLY"
+    nt.links.new(drv.outputs["Value"], patch.inputs[0])
+    nt.links.new(mr2.outputs["Result"], patch.inputs[1])
+    nt.links.new(patch.outputs["Value"], bmix.inputs["Factor"])
     nt.links.new(bmix.outputs["Result"], base)
+    # roughness breakup: dusty skin is not uniformly smooth
+    rough = bsdf.inputs.get("Roughness")
+    if rough is not None:
+        rr = nt.nodes.new("ShaderNodeMapRange")
+        rr.clamp = True
+        rr.inputs["From Min"].default_value = 0.0
+        rr.inputs["From Max"].default_value = 1.0
+        rr.inputs["To Min"].default_value = 0.80
+        rr.inputs["To Max"].default_value = 1.00
+        nt.links.new(nz2.outputs["Fac"], rr.inputs["Value"])
+        nt.links.new(rr.outputs["Result"], rough)
     sheen = bsdf.inputs.get("Sheen weight") or bsdf.inputs.get("Sheen")
     if sheen is not None:
-        sheen.default_value = 0.25
+        sheen.default_value = 0.0
     tint = bsdf.inputs.get("Sheen tint")
     if tint is not None:
         tint.default_value = (0.66, 0.71, 0.75, 1.0)
@@ -111,11 +140,61 @@ def rind_material():
 
 
 def build_stem(name, mat, col):
-    stem = H.add_cylinder(name, 0.028, 0.085, radius_top=0.020,
-                          vertices=12, mat=mat, collection=col)
-    stem.location = (0.004, 0.0, 0.204 + 0.025)
-    stem.rotation_euler = (0.0, math.radians(8), 0.0)
-    return [stem]
+    # sturdy corky stem: 8 bark ridges, taper, lean
+    sides, rings, h = 32, 6, 0.115
+    r0, r1 = 0.034, 0.024
+    bm = bmesh.new()
+    grid = []
+    for j in range(rings + 1):
+        f = j / rings
+        r = r0 + (r1 - r0) * f
+        ring = []
+        for i in range(sides):
+            a = 2 * math.pi * i / sides
+            rr = r * (1 + 0.10 * math.sin(8 * a + f * 2.5))
+            ring.append(bm.verts.new((rr * math.cos(a), rr * math.sin(a),
+                                      f * h)))
+        grid.append(ring)
+    for j in range(rings):
+        for i in range(sides):
+            k = (i + 1) % sides
+            bm.faces.new((grid[j][i], grid[j][k], grid[j + 1][k],
+                          grid[j + 1][i]))
+    bm.faces.new(list(grid[0]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    obj = bpy.data.objects.new(name, H.mesh_from_bmesh(name, bm))
+    H.link(obj, col)
+    H.assign(obj, mat)
+    H.shade_smooth(obj, angle=40)
+    obj.location = (0.004, 0.0, 0.204 - 0.020)
+    obj.rotation_euler = (0.0, math.radians(8), 0.0)
+    return [obj]
+
+
+def stem_material():
+    mat = H.material("JarrahdaleStemBark", "#8A7350", roughness=0.95)
+    nt = mat.node_tree
+    bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
+    base = bsdf.inputs.get("Base Color") or bsdf.inputs[0]
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    mp = nt.nodes.new("ShaderNodeMapping")
+    mp.inputs["Scale"].default_value = (6.0, 6.0, 14.0)
+    nt.links.new(tc.outputs["Object"], mp.inputs["Vector"])
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 8.0
+    nz.inputs["Detail"].default_value = 3.0
+    nt.links.new(mp.outputs["Vector"], nz.inputs["Vector"])
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.inputs["A"].default_value = H.color("#6E5A3E")
+    mix.inputs["B"].default_value = H.color("#A68D63")
+    nt.links.new(nz.outputs["Fac"], mix.inputs["Factor"])
+    nt.links.new(mix.outputs["Result"], base)
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.6
+    nt.links.new(nz.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    return mat
 
 
 def render_view(cam, body, parts, azimuth, path):
@@ -128,11 +207,15 @@ def main():
     H.reset_scene()
     col = H.collection("Jarrahdale")
     body = build_body("Jarrahdale", rind_material(), col)
-    stem_mat = H.material("JarrahdaleStem", P["stem_c"], roughness=0.85)
-    parts = build_stem("JarrahdaleStem", stem_mat, col)
+    parts = build_stem("JarrahdaleStem", stem_material(), col)
+    # dusty matte fruit wants soft overcast light: key + fill only,
+    # no rim (it etches white crest spots into the matte rind)
     H.studio_lighting(target=[body] + parts, key_azimuth=-40,
-                      key_elevation=45, intensity=0.7, contrast=0.75,
-                      softness=0.5)
+                      key_elevation=45, intensity=0.38, contrast=0.55,
+                      softness=0.8)
+    rim = bpy.data.objects.get("Rim")
+    if rim is not None:
+        bpy.data.objects.remove(rim, do_unlink=True)
     cam = H.add_camera("Camera", location=(0, -3, 0.3), target=(0, 0, 0.11),
                        lens=P["lens"])
     if PREVIEW:

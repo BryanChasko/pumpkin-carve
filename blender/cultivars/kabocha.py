@@ -117,8 +117,8 @@ def rind_material():
     nt.links.new(mp.outputs["Vector"], mg.inputs["Vector"])
     mr = nt.nodes.new("ShaderNodeMapRange")
     mr.clamp = True
-    mr.inputs["From Min"].default_value = 0.62
-    mr.inputs["From Max"].default_value = 0.85
+    mr.inputs["From Min"].default_value = 0.70
+    mr.inputs["From Max"].default_value = 0.90
     nt.links.new(mg.outputs["Fac"], mr.inputs["Value"])
     mmix = nt.nodes.new("ShaderNodeMix")
     mmix.data_type = "RGBA"

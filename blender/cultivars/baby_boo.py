@@ -29,7 +29,7 @@ PREVIEW = "--preview" in sys.argv
 
 P = dict(
     R=0.075, sx=1.0, sy=0.94, sz=0.62,
-    lobes=10, groove_depth=0.10, groove_pow=0.55,
+    lobes=10, groove_depth=0.12, groove_pow=0.55,
     segs=100, rings=50,
     rind="#F2EDE2", rind_groove="#CFC5B2",
     stem_c="#7A6B45",

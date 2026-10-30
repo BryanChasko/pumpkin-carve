@@ -22,7 +22,7 @@ into a recessed top.
 | ------------------- | -------------------------------- |
 | proportions (w x h) | 2.0 x 1.0                        |
 | ribs                | 16-18, fine and shallow          |
-| base color          | #d9a960                          |
+| base color          | #c08a3e (renders to ref buff)    |
 | stem                | short, sunk in recessed well     |
 | top                 | deep stem well, not a crown bump |
 

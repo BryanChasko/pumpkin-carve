@@ -48,6 +48,10 @@ saves the `.blend`.
 - `photocraft-cli image.adjustments.threshold` ignores its level in
   0.17 (futsu: identical output at 128, 48, and 0.25). brightness
   lift stands in; recorded in the futsu spec.
+- Map Range node: From Min/Max is the INPUT range, To Min/Max the
+  OUTPUT range. setting From 0.8-1.0 with default To 0-1 clamps
+  almost all noise to 0 — jarrahdale rendered chrome-smooth for
+  four rounds before the mirror test caught it. always set both.
 
 cultivar facts: botanical interests (cinderella), garden betty +
 specialty produce (black futsu), baker creek + rareseeds

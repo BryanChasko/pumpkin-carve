@@ -97,6 +97,29 @@ def build_stem(name, mat, col):
     return [obj]
 
 
+def stem_material():
+    mat = H.material("SugarPieStemBark", "#5E5E33", roughness=0.9)
+    nt = mat.node_tree
+    bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
+    base = bsdf.inputs.get("Base Color") or bsdf.inputs[0]
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 10.0
+    nz.inputs["Detail"].default_value = 3.0
+    nt.links.new(tc.outputs["Object"], nz.inputs["Vector"])
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.inputs["A"].default_value = H.color("#4A4A26")
+    mix.inputs["B"].default_value = H.color("#7A7A48")
+    nt.links.new(nz.outputs["Fac"], mix.inputs["Factor"])
+    nt.links.new(mix.outputs["Result"], base)
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.5
+    nt.links.new(nz.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    return mat
+
+
 def rind_material():
     mat = H.material("SugarPieRind", P["rind"], roughness=0.35, coat=0.5)
     nt = mat.node_tree
@@ -124,8 +147,7 @@ def main():
     H.reset_scene()
     col = H.collection("SugarPie")
     body = build_body("SugarPie", rind_material(), col)
-    stem_mat = H.material("SugarPieStem", P["stem_c"], roughness=0.85)
-    parts = build_stem("SugarPieStem", stem_mat, col)
+    parts = build_stem("SugarPieStem", stem_material(), col)
     H.studio_lighting(target=[body] + parts, key_azimuth=-40,
                       key_elevation=45, intensity=0.7, contrast=0.75,
                       softness=0.5)

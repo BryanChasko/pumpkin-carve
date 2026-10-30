@@ -17,13 +17,13 @@ drum shape, deep ribs, slate blue-grey dusty skin, golden flesh inside.
 
 ## spec
 
-| trait               | value                        |
-| ------------------- | ---------------------------- |
-| proportions (w x h) | 1.5 x 1.0                    |
-| ribs                | 12-14, deep                  |
-| base color          | #7a8b99                      |
-| bloom               | #a8b6c0 dusting in valleys   |
-| stem                | sturdy cylinder, tan #9a7f57 |
+| trait               | value                          |
+| ------------------- | ------------------------------ |
+| proportions (w x h) | 1.5 x 1.0                      |
+| ribs                | 12-14, deep                    |
+| base color          | #5f7482 (renders to ref slate) |
+| bloom               | #a8b6c0 dusting in valleys     |
+| stem                | sturdy cylinder, tan #9a7f57   |
 
 ## blender plan (separate file: `blender/cultivars/jarrahdale.py`)
 

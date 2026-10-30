@@ -127,11 +127,53 @@ def light_rig(focus, r):
 
 
 def build_stem(name, mat, col, topz):
-    stem = H.add_cylinder(name, 0.030, 0.10, radius_top=0.022,
-                          vertices=12, mat=mat, collection=col)
-    stem.location = (0.0, 0.0, topz + 0.030)
-    stem.rotation_euler = (0.0, 0.0, 0.0)
-    return [stem]
+    # thick ridged stem: 8 bark ridges, straight and sturdy
+    sides, rings, h = 32, 5, 0.10
+    r0, r1 = 0.030, 0.022
+    bm = bmesh.new()
+    grid = []
+    for j in range(rings + 1):
+        f = j / rings
+        r = r0 + (r1 - r0) * f
+        ring = []
+        for i in range(sides):
+            a = 2 * math.pi * i / sides
+            rr = r * (1 + 0.10 * math.sin(8 * a + f * 2.0))
+            ring.append(bm.verts.new((rr * math.cos(a), rr * math.sin(a),
+                                      f * h)))
+        grid.append(ring)
+    for j in range(rings):
+        for i in range(sides):
+            k = (i + 1) % sides
+            bm.faces.new((grid[j][i], grid[j][k], grid[j + 1][k],
+                          grid[j + 1][i]))
+    bm.faces.new(list(grid[0]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    obj = bpy.data.objects.new(name, H.mesh_from_bmesh(name, bm))
+    H.link(obj, col)
+    H.assign(obj, mat)
+    H.shade_smooth(obj, angle=40)
+    obj.location = (0.0, 0.0, topz + 0.030 - h / 2 + 0.02)
+    return [obj]
+
+
+def stem_material():
+    mat = H.material("HarvestStemBark", "#5E5E33", roughness=0.9)
+    nt = mat.node_tree
+    bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
+    base = bsdf.inputs.get("Base Color") or bsdf.inputs[0]
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 10.0
+    nz.inputs["Detail"].default_value = 3.0
+    nt.links.new(tc.outputs["Object"], nz.inputs["Vector"])
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.inputs["A"].default_value = H.color("#4A4A26")
+    mix.inputs["B"].default_value = H.color("#767648")
+    nt.links.new(nz.outputs["Fac"], mix.inputs["Factor"])
+    nt.links.new(mix.outputs["Result"], base)
+    return mat
 
 
 def render_view(cam, body, parts, azimuth, path):
@@ -144,7 +186,7 @@ def main():
     H.reset_scene()
     col = H.collection("HarvestMoon")
     body = build_body("HarvestMoon", rind_material(), col)
-    stem_mat = H.material("HarvestStem", P["stem_c"], roughness=0.8)
+    stem_mat = stem_material()
     topz = 2 * P["R"] * P["sz"]
     parts = build_stem("HarvestStem", stem_mat, col, topz)
     lo, hi = H.bbox([body] + parts)
