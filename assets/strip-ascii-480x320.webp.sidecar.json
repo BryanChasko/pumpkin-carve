@@ -1,7 +1,7 @@
 {
   "source": "strip-ascii-480x320.webp",
-  "sha256": "486826546474826c0a3282211ce0c51828b0453a65af7124a5dc441e0739e779",
-  "bytes": 7120,
+  "sha256": "ffe732675cad5d42f6378c92bea57be09f7c34e4d6b0ab96f0d10176da1d3420",
+  "bytes": 6940,
   "tool": "PIL 12.2 / make_strips.py",
   "note": "ascii pumpkin, dejavu sans mono 12, lavender on navy"
 }

@@ -77,8 +77,9 @@ def right_panel():
     img = Image.new("RGB", (W, H), NAVY)
     d = ImageDraw.Draw(img)
     font = ImageFont.truetype(
-        "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 12)
-    d.multiline_text((10, 6), txt, font=font, fill=LAV, spacing=1)
+        "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 11)
+    tw = d.textlength(txt.splitlines()[0], font=font)
+    d.multiline_text(((W - tw) / 2, 4), txt, font=font, fill=LAV, spacing=0)
     img = ben_day(img.convert("RGBA")).convert("RGB")
     out = os.path.join(HERE, "strip-ascii-480x320.webp")
     img.save(out, "WEBP", lossless=True, method=6)
