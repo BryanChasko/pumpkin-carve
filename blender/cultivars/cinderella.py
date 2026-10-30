@@ -95,6 +95,18 @@ def rind_material():
     nt.links.new(attr.outputs["Fac"], mix.inputs["Factor"])
     nt.links.new(mix.outputs["Result"], base)
     H.add_noise_variation(mat, scale=9, amount=0.12, roughness_amount=0.08)
+    # waxy crests, matte valleys: groove drives roughness
+    # (From = input range, To = output range)
+    gr = nt.nodes.new("ShaderNodeMapRange")
+    gr.clamp = True
+    gr.inputs["From Min"].default_value = 0.0
+    gr.inputs["From Max"].default_value = 1.0
+    gr.inputs["To Min"].default_value = 0.32
+    gr.inputs["To Max"].default_value = 0.58
+    nt.links.new(attr.outputs["Fac"], gr.inputs["Value"])
+    rough = bsdf.inputs.get("Roughness")
+    if rough is not None:
+        nt.links.new(gr.outputs["Result"], rough)
     return mat
 
 

@@ -29,7 +29,7 @@ PREVIEW = "--preview" in sys.argv
 
 P = dict(
     R=0.24, sx=1.0, sy=0.94, sz=0.98,
-    spherify=1.0, subdiv=3, square=0.09,
+    spherify=1.0, subdiv=3, square=0.10,
     lobes=13, groove_depth=0.22, groove_pow=0.60,
     rind="#E8907C", rind_groove="#B07078",
     stem_c="#A08B62",
@@ -108,7 +108,7 @@ def rind_material():
     mix = nt.nodes.new("ShaderNodeMix")
     mix.data_type = "RGBA"
     mix.inputs["A"].default_value = H.color(P["rind"])
-    mix.inputs["B"].default_value = H.color(P["rind_groove"])
+    mix.inputs["B"].default_value = H.color("#9A5F68")
     nt.links.new(attr.outputs["Fac"], mix.inputs["Factor"])
     nt.links.new(mix.outputs["Result"], base)
     H.add_noise_variation(mat, scale=9, amount=0.08, roughness_amount=0.05)

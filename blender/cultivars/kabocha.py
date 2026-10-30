@@ -34,7 +34,7 @@ P = dict(
     segs=156, rings=78,
     rind="#24351F", groove_c="#16220F", mottle="#9FB08A",
     stem_c="#9A7F57",
-    mottle_scale=6.0, displace_strength=0.008,
+    mottle_scale=4.5, displace_strength=0.008,
     bg="#909399", exposure=1.0, lens=70, margin=1.12,
 )
 

@@ -11,16 +11,16 @@ measured 2026-10-30 against `refs/<name>/front.jpg` + `profile.jpg`.
 
 | cultivar           | sil | ribs | color | surf | stem | overall | round   |
 | ------------------ | --- | ---- | ----- | ---- | ---- | ------- | ------- |
-| cinderella         | 8   | 8    | 8     | 7    | 8    | 7.8     | r2      |
+| cinderella         | 8   | 8    | 8     | 8    | 8    | 8.0     | r3 PASS |
 | black futsu        | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
 | sugar pie          | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
 | baby boo           | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
-| porcelain doll     | 8   | 8    | 8     | 7    | 8    | 7.8     | r2      |
+| porcelain doll     | 8   | 8    | 8     | 8    | 8    | 8.0     | r3 PASS |
 | jarrahdale         | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
 | lumina             | 9   | 8    | 8     | 8    | 8    | 8.2     | r1 PASS |
 | long island cheese | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
 | harvest moon       | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
-| kabocha            | 8   | 8    | 8     | 7    | 8    | 7.9     | r2      |
+| kabocha            | 8   | 8    | 8     | 8    | 8    | 8.0     | r3 PASS |
 
 systematic gaps (all): smooth toy stems (refs are corky/fibrous),
 skins too uniform (refs have mottling, dust, fiber). fixed per
@@ -37,3 +37,12 @@ file below — each cultivar keeps its own construction.
 - kabocha: mottle threshold up (fewer patches). target surf 8.
 - sugar pie / baby boo / cheese / harvest moon: corky stems,
   minor color nudges. target 8+.
+
+## r3 fixes
+
+- cinderella: groove-driven roughness (waxy crests 0.32, matte
+  valleys 0.58). a noise-streak attempt read as wood grain and
+  was reverted. surf 8.
+- porcelain doll: square 0.10, darker groove `#9a5f68`. sil 8.
+- kabocha: mottle mapping 6.0 to 4.5 (larger celadon blotches);
+  a stripe widening overshot and was reverted. surf 8.
