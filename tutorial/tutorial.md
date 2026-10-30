@@ -660,5 +660,3 @@ by hand, so one material edit restyles the whole patch.
 | no grease pencil lines    | line art source not the collection | step 5 |
 | dashes in the glow        | groove tubes inside 9 mm margin    | step 5 |
 | milky grade               | screen blend above 60%             | step 6 |
-
-happy carving. share what you make.

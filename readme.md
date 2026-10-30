@@ -1,13 +1,13 @@
 # pumpkin-carve
 
 build a jack-o-lantern in blender, then finish it in photocraft.
-how, in one breath: you'll squash a sphere into a ribbed pumpkin,
-sweep a bark stem along a curve, cut the eyes and grin clean through
-the rind with booleans and line the holes with glowing flesh, shade
-it flat-orange with shader nodes, trace it with grease pencil ink,
-then open the render in photocraft for vibrance, warmth, and a
-candlelit glow. six steps, two tracks per step (by hand in the
-interface, or in annotated python), full instructions in
+the process: squash a sphere into a ribbed pumpkin, sweep a bark
+stem along a curve, cut the eyes and grin through the rind with
+booleans and line the holes with glowing flesh, shade it with
+shader nodes, trace it with grease pencil ink, then open the
+render in photocraft for vibrance, warmth, and a candlelit glow.
+six steps, two tracks per step (by hand in the interface, or in
+annotated python), full instructions in
 [the tutorial](tutorial/tutorial.md).
 
 <table>
@@ -39,7 +39,7 @@ interface, or in annotated python), full instructions in
   </tr>
   <tr>
     <td><img src="tutorial/examples/step-3-face.png" width="170" alt="carved face, clay render"></td>
-    <td><b>3 · carve the face</b> — shape two triangles and a zigzag grin as flat cutters, boolean-difference them through the rind, then build a pale funnel inside each hole capped with amber emission. one small light placed inside the body sells the candle.<br>
+    <td><b>3 · carve the face</b> — shape two triangles and a zigzag grin as flat cutters, boolean-difference them through the rind, then build a pale funnel inside each hole capped with amber emission. one small light inside the body lights the cuts from within.<br>
     <a href="tutorial/tutorial.md">tutorial step 3</a> · <a href="tutorial/examples/03-carved-face.blend">example .blend</a></td>
   </tr>
   <tr>
