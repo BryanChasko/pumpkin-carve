@@ -1,0 +1,7 @@
+{
+  "source": "strip-render-480x320.webp",
+  "sha256": "52b9c1195174f4e405502a0f1d4eb05f7455a36e36da0d594b276147ee87922f",
+  "bytes": 20574,
+  "tool": "PIL 12.2 / make_strips.py",
+  "note": "graded render, navy vignette, ben-day dots"
+}
