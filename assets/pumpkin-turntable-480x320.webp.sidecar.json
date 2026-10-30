@@ -1,7 +1,7 @@
 {
-  "source": "pumpkin-turntable-480x320.webp",
-  "sha256": "7bc63986c950688be0670e7189e90a91cf4bd261199fa04fe21a9145a8813e70",
-  "bytes": 299680,
-  "tool": "ffmpeg version 6.1.1-3ubuntu5+esm15 Copyright (c) 2000-2023 the FFmpeg developers",
-  "blend": "scene.blend cpu cycles"
+  "source": "assets/pumpkin-turntable-480x320.webp",
+  "sha256": "2020301f79c84c16f8eb1c8f2a91096ef0b1e5e7e3cef8881db4e350365707a9",
+  "bytes": 289064,
+  "tool": "PIL 12.2 webp, 24 frames x 200ms",
+  "note": "slow spin, 4.8s per turn"
 }

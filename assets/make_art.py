@@ -30,7 +30,7 @@ def framed_hero(src, dst):
 
 
 if __name__ == "__main__":
-    txt = ascii_art(os.path.join(ROOT, "render.png"))
+    txt = ascii_art(os.path.join(ROOT, "blender", "exports", "render.png"))
     with open(os.path.join(OUT, "pumpkin.txt"), "w") as f:
         f.write(txt)
     framed_hero(os.path.join(ROOT, "post", "render_post_glow.png"),
