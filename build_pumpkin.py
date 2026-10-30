@@ -7,6 +7,7 @@ outlines, dark background. CPU Cycles, headless rebuildable.
 Rebuild: blender -b --factory-startup --python-exit-code 1 --cycles-device CPU -P build_pumpkin.py [-- --preview]
 """
 import math
+import os
 import sys
 
 SKILL_SCRIPTS = "/home/bryanchasko/.local/share/muse/skills/bundled/muse-core~v1/skills/blender/scripts"
@@ -20,6 +21,8 @@ import bpy_helpers as H  # noqa: E402
 OUT = "/home/bryanchasko/code/ne3d-pumpkin-2026"
 PREVIEW = "--preview" in sys.argv
 TOON = "--toon" in sys.argv
+TURNTABLE = "--turntable" in sys.argv
+TURNTABLE_FRAMES = 24
 
 P = dict(
     # body (metres, true scale for a large carving pumpkin)
@@ -855,6 +858,21 @@ def main():
         H.set_render(engine="CYCLES", resolution=(960, 640), samples=32,
                      view_transform="Standard", exposure=1.0, device="CPU")
         H.render_still(OUT + "/render_toon.png", background="#FFFFFF")
+    elif TURNTABLE:
+        os.makedirs(OUT + "/assets/frames", exist_ok=True)
+        H.set_render(engine="CYCLES", resolution=(480, 320), samples=10,
+                     view_transform="Standard", exposure=P["exposure"], device="CPU")
+        add_bloom()
+        base = cam.location - c2
+        for i in range(TURNTABLE_FRAMES):
+            ang = 2 * math.pi * i / TURNTABLE_FRAMES
+            ca, sa = math.cos(ang), math.sin(ang)
+            off = Vector((base.x * ca - base.y * sa,
+                          base.x * sa + base.y * ca, base.z))
+            cam.location = c2 + off
+            H.look_at(cam, tuple(focus))
+            H.render_still("%s/assets/frames/f%02d.png" % (OUT, i),
+                           background=P["bg"])
     else:
         H.set_render(engine="CYCLES", resolution=(960, 640), samples=32,
                      view_transform="Standard", exposure=P["exposure"], device="CPU")

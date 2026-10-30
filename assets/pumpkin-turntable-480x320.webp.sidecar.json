@@ -1,0 +1,7 @@
+{
+  "source": "pumpkin-turntable-480x320.webp",
+  "sha256": "7bc63986c950688be0670e7189e90a91cf4bd261199fa04fe21a9145a8813e70",
+  "bytes": 299680,
+  "tool": "ffmpeg version 6.1.1-3ubuntu5+esm15 Copyright (c) 2000-2023 the FFmpeg developers",
+  "blend": "scene.blend cpu cycles"
+}

@@ -1,45 +1,104 @@
-# ne3d virtual pumpkin carving - headless blender build
+# 🎃 pumpkin-carve — a headless haunted blender pipeline 👻
 
-built for the oct 31 2026 ne3d meetup: part one carves a stylized
-jack-o-lantern in blender, part two grades it in photocraft (artcraft
-studio) with first-impression talking points.
+> built live for the ne3d virtual pumpkin carving jam, oct 31 2026.
+> part one: carve a jack-o-lantern without touching the mouse.
+> part two: grade it in photocraft and talk rust all night. 🦇
 
-## contents
+![spinning jack-o-lantern](assets/pumpkin-turntable-480x320.webp)
 
-- build_pumpkin.py - one rebuildable script: ribbed body, carved glowing
-  face, stem + twig + leaves, toon shading layers, grease pencil line art
-  ink pass, lights, camera, compositor bloom. cpu cycles only.
-- scene.blend - saved from the final build.
-- render.png - shaded final (960x640).
-- render_toon.png - inked drawing variant: white bg, bold lines, no bloom.
-- post/render_post.png - photocraft grade (vibrance, contrast, warm filter).
-- post/render_post_glow.png - plus blurred screen-blend glow, flattened.
-- post/render_post.psd - same stack unflattened, real layered psd.
-- post/post.sh - the exact headless photocraft-cli post chain, re-runnable.
-- guide.md - manual gui reproduce + adapt menu + live demo script.
-- visual-plan/refs/ - hero.jpg + side.png look targets (generated: the
-  meetup drive links need login, so no drive art is used here).
-- critic/ - observation sheet + 4 blind-critic rounds, all kept.
+![blender](https://img.shields.io/badge/blender-4.4-orange?style=flat-square)
+![photocraft](https://img.shields.io/badge/photocraft-0.17-rust?style=flat-square)
+![render](https://img.shields.io/badge/render-cycles_cpu-darkgreen?style=flat-square)
+![vibes](https://img.shields.io/badge/vibes-haunted-purple?style=flat-square)
 
-## rebuild
+## the pumpkin, four ways 🕷️
 
-blender -b --factory-startup --python-exit-code 1 -P build_pumpkin.py
-blender -b --factory-startup --python-exit-code 1 -P build_pumpkin.py -- --toon
-blender -b --factory-startup --python-exit-code 1 -P build_pumpkin.py -- --preview
-./post/post.sh
+| shaded                                                      | inked drawing                                          |
+| ----------------------------------------------------------- | ------------------------------------------------------ |
+| ![shaded pumpkin](assets/pumpkin-hero-960x640.webp)         | ![inked pumpkin](assets/pumpkin-ink-960x640.webp)      |
+| `render.png` — toon rind, glow cuts, grease pencil line art | `render_toon.png` — white bg, bold 6px ink, zero bloom |
 
-one blender at a time on the shared box: check pgrep blender first, never
-stop another session's process. cpu device is forced in-script.
+| graded + glow                                              | living svg                                        |
+| ---------------------------------------------------------- | ------------------------------------------------- |
+| ![graded pumpkin](assets/pumpkin-framed-978x658.webp)      | ![flickering pumpkin](assets/pumpkin-flicker.svg) |
+| photocraft grade: vibrance, warm filter, screen-blend glow | hand-drawn svg, the candlelight flickers forever  |
 
-## versions
+## absolutely no mice were used 🖱️🚫
 
-blender 4.4.0, photocraft-cli 0.17.0, ubuntu 24.04.
+everything below runs headless. one script builds the pumpkin, carves the
+face, inks the outlines, lights the candle, and renders — then a second
+script grades it. the pipeline survived 4 blind-critic review rounds and
+kept every single one.
 
-## known gaps
+```
+blender -b --factory-startup --python-exit-code 1 -P build_pumpkin.py            # shaded
+blender -b --factory-startup --python-exit-code 1 -P build_pumpkin.py -- --toon  # inked
+./post/post.sh                                                                   # spooky grade
+```
 
-- blind grader left lighting/texture low: bevel interiors lack carved
-  texture strokes, left shadow flank runs dark vs the ref.
-- right eye slightly short of the ref ideal; leaflets small at output size.
-- round files use the workflow's own format, so critic.py check does not
-  parse them; rounds + diffs live in critic/round_*.md and stand as the
-  review record.
+## the ascii pumpkin, for terminal goblins 🧛
+
+```
+                                   .:===.
+                                   .====
+                          .:..:-. .-----:: .-:..:.
+                       .-+==+**=-=*#*-:+*#*-=**+==+=.
+                     :=*+-=**+-:+=**+--+**+*--***=-**=:.
+                   :=**=.=#*+=:=+=**+--+**+**:=**#=:+**=:
+                 .-+**=.=#**+:-+=+**+--++*++*=:+**#=:=**+=.
+                :=+*+=:-#**+-:=+=***+--++**+*+:-+**#=:=**++:
+               :=+*+=:-***+=:-=+=#**+--=+**+**-:+**#*=:+*#++-
+              -=+*+=::+#**+-:-+++#**+--=+**+**+:=+**#*--+*#++-
+             :==**+-:=#***+::=+=*#**+--=++*++*+--+***#+-=**#++-
+            .+=**+=:-*#**+=:-=+-+#**+--=++**+*+=-++**#*=--**#+*.
+            +=+*+=-:=****+-:-+=*==**+--=++**+**=:=+***#==*=*#*++
+           -+=**+=:-+***+=-:===%%-=*+--=+++*+**+-=+***+*#*=**#+*-
+          .+=+*+=-:-****+=::=-#%%#-=*--==++*+**+--+*++#%%*++*#*=*.
+          -+=*++=::=***++-:--+%%%%#-==:==++*+**+==+=*%%%%*+=**#+*=
+          +=+++=-:-+***+=-:--%%%%%%#----=++*++*+=-=#%%%%%#*=+***+*
+         :+=+++=-:-****+=--:*%%%%%%%*::-=++*++**=+%%##*++==-+**#=*:
+         -+=++==-:=***++=-:=%%%%%%%%%*:-=+++++*-=+===-====--+**#+*=
+         ==+++==::=***+=-::*##%###**++==-+++++*==--=++**#+=-+****++
+         +=++==-:-=++++=-::-------==-----+++++**+--==+++*+=:++***++
+         +=++==-:-=++++=-:-==+=***++=:::==+++=**+-:==+++*+=:=+***++
+         +=+===-:-=++++=-::=++=****+=::--=+++=**+-:-==++*+=:=++**++
+         +=+===-:-=+++=-:.:=++=****+=:::-=++==**+-:--==+*+=:=++**++
+         ==+==--:-=++==-:.:=++=***++-:::-=++==**+-:--===++=:=+++*++
+         -====--:--====-:.:-=+=***++-:.:-==+==*++::---==++=:=++++==
+         :====--::-===--:.:-=+=+*++=-:.:-==+==*+=:::---===-:==++:=-
+         .====--::--==-::.:-=+=++++=-:.:-=====*+=:.::---==::===-:=.
+          -===--::-::--::.:-=+=++++=:..:-===-=*+-:.::-----::--*+:-
+          :-==--::-:=--::..-=+-=++=-:..:-===-=+=-:.:::---:.:-*%--:
+           --=--:.::=*:::..:=+--++=-:..:--==-=+=:...::---:.-#%+::
+           .-=--:::-:##-...:-+=-=---:..:--==-==-=-...::::.+##*:..
+            :----:.::=%#=..:-=-:-++-. .:--==---*%%#+-:::.=%##- .
+             :---:.:::###=..:-=*%%%%#+:::----+%%%%%@%+=.-%##+
+              :--::.::+##*+**+#**%%%%%%#=--+#%%%%%#*+**..:::
+               :-::..:-###**:.-**+*%%%##*===+#%%#++##=:
+                :-::..:##*: .-::+#*+**+=---::=+*+##=. .  .
+                 :::...==  ..:=- -*#*=:.:---  .=*=....
+```
+
+regenerate: `python3 assets/make_art.py` (also builds the framed hero).
+
+## repo map 🗺️
+
+- `build_pumpkin.py` — the whole haunted pipeline in one script
+- `scene.blend` — saved from the final build, poke it in the gui
+- `render.png` / `render_toon.png` — shaded final + inked variant
+- `post/` — `post.sh` grade chain, graded pngs, layered `render_post.psd`
+- `assets/` — turntable webp + frames, hero/ink webps, flicker svg,
+  ascii txt, sidecars with sha256 for every shipped file
+- `guide.md` — the 2-hour jam script: gui reproduce steps, adapt menu,
+  photocraft talking points
+- `visual-plan/refs/` + `critic/` — look targets and all 4 review rounds
+
+## house rules 🏚️
+
+- cpu renders only while the shared box is busy. check `pgrep blender`
+  first, never stop another session's process.
+- ship webp; sidecar or it did not happen. brand: house navy `#0f141c`,
+  one orange accent, deja vu sans for code-drawn type.
+- seed of the jam: carve something, shade something, show something.
+
+happy halloween. do not feed the render farm after midnight. 🎃
