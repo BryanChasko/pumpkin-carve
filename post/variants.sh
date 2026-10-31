@@ -33,10 +33,17 @@ photocraft-cli run "$V/sugar-pie.png" \
 	--params '{"hue":8,"saturation":10}' \
 	--out "$O/sugar-pie.png"
 
-# 4. baby boo - invert ghost negative
+# 4. baby boo - beauty grade is the showcase (warm filter + lift);
+# invert ships beside it as baby-boo-invert.png, the graphic extra.
+photocraft-cli run "$V/baby-boo.png" \
+	--cmd image.adjustments.photoFilter \
+	--params '{"color":"#fff2df","density":10}' \
+	--cmd image.adjustments.brightnessContrast \
+	--params '{"brightness":4,"contrast":10}' \
+	--out "$O/baby-boo.png"
 photocraft-cli run "$V/baby-boo.png" \
 	--cmd image.adjustments.invert \
-	--out "$O/baby-boo.png"
+	--out "$O/baby-boo-invert.png"
 
 # 5. porcelain doll - outer glow layer style, kept live in the psd
 photocraft-cli run "$V/porcelain-doll.png" \

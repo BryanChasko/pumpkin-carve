@@ -18,6 +18,7 @@ measured 2026-10-30 against `refs/<name>/front.jpg` + `profile.jpg`.
 | black futsu        | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
 | sugar pie          | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
 | baby boo           | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
+| baby boo           | 9   | 9    | 8     | 8    | 9    | 8.6     | r3 PASS |
 | porcelain doll     | 8   | 8    | 8     | 8    | 8    | 8.0     | r3 PASS |
 | jarrahdale         | 8   | 8    | 8     | 8    | 8    | 8.0     | r2 PASS |
 | lumina             | 9   | 8    | 8     | 8    | 8    | 8.2     | r1 PASS |

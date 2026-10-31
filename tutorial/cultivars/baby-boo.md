@@ -31,14 +31,20 @@ repeated props.
 
 ## finish in photocraft
 
-invert — a white pumpkin on a dark ground becomes a ghost
+warm filter + lift — the showcase stays a white pumpkin, not a
 negative:
 
 ```
 photocraft-cli run tutorial/variants/baby-boo.png \
-  --cmd image.adjustments.invert \
+  --cmd image.adjustments.photoFilter \
+  --params '{"color":"#fff2df","density":10}' \
+  --cmd image.adjustments.brightnessContrast \
+  --params '{"brightness":4,"contrast":10}' \
   --out post/variants/baby-boo.png
 ```
+
+the invert ghost ships beside it as `baby-boo-invert.png` — same
+fruit, graphic extra, not the display piece.
 
 ## renders
 

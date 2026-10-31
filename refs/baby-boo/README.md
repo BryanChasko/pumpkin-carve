@@ -38,7 +38,8 @@ Docs: [linked duplicates](https://docs.blender.org/manual/en/latest/scene_layout
 
 ## photocraft plan
 
-Feature: invert for a ghost-negative variant.
+Feature: warm filter + lift beauty grade (the display piece);
+invert ships beside it as the graphic extra.
 Docs: [photocraft](https://github.com/storytold/photocraft).
 
 ## acceptance
