@@ -56,7 +56,8 @@ fruit, graphic extra, not the display piece.
 
 rubric: silhouette, ribs, color, surface, stem — mean, pass at 8.0.
 
-| round | sil | ribs | color | surf | stem | mean | notes                                          |
-| ----- | --- | ---- | ----- | ---- | ---- | ---- | ---------------------------------------------- |
-| r1    | 8   | 8    | 8     | 7    | 7    | 7.6  | long stems, loose cluster                      |
-| r2    | 8   | 8    | 8     | 8    | 8    | 8.0  | PASS — deeper ribs, tight cluster, short stems |
+| round | sil | ribs | color | surf | stem | mean | notes                                                                                                                                              |
+| ----- | --- | ---- | ----- | ---- | ---- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| r1    | 8   | 8    | 8     | 7    | 7    | 7.6  | long stems, loose cluster                                                                                                                          |
+| r2    | 8   | 8    | 8     | 8    | 8    | 8.0  | deeper ribs, tight cluster, short stems                                                                                                            |
+| r3    | 9   | 9    | 8     | 8    | 9    | 8.6  | PASS — plumper body, crown dip, freckles, tall green ridged stem with star base, hero composition; beauty grade showcases, invert demoted to extra |
