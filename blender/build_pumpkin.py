@@ -122,15 +122,32 @@ FACE_DZ = P.pop("face_dz", 0.0)
 # edge, 3 upward lower teeth, thin upswept pointed corner tips.
 # Variants rescale them: _face() applies FACE_SCALE around the outline
 # centre, then FACE_DZ, so narrow/flat bodies keep the face on the rind.
-def _face(poly):
+EYE_SCALE = P.pop("eye_scale", 1.0)
+GRIN_SCALE = P.pop("grin_scale", 1.0)
+FACE = P.get("face", "classic")
+
+
+def _face(poly, s=1.0):
     cx = sum(p[0] for p in poly) / len(poly)
     cz = sum(p[1] for p in poly) / len(poly)
-    return [(cx + (x - cx) * FACE_SCALE, cz + (z - cz) * FACE_SCALE + FACE_DZ)
+    m = FACE_SCALE * s
+    return [(cx + (x - cx) * m, cz + (z - cz) * m + FACE_DZ)
             for x, z in poly]
+
+
+def _disc(cx, cz, r, n=16):
+    return [(cx + r * math.cos(2 * math.pi * i / n),
+             cz + r * math.sin(2 * math.pi * i / n)) for i in range(n)]
+
+
 _EYE_L = [(-0.055, 0.342), (0.022, 0.258), (-0.104, 0.258)]
 _EYE_R = [(0.185, 0.340), (0.205, 0.282), (0.078, 0.270)]
-EYE_L = _face(_EYE_L)
-EYE_R = _face(_EYE_R)
+if FACE == "round":
+    EYE_L = _face(_disc(-0.05, 0.30, 0.045), EYE_SCALE)
+    EYE_R = _face(_disc(0.145, 0.305, 0.045), EYE_SCALE)
+else:
+    EYE_L = _face(_EYE_L, EYE_SCALE)
+    EYE_R = _face(_EYE_R, EYE_SCALE)
 # Both polylines are strictly x-monotone with upper above lower at every
 # station (min margin 0.010 at the interlocking teeth), so the closed
 # polygon cannot self-intersect.
@@ -140,7 +157,7 @@ GRIN_UPPER = [(-0.165, 0.189), (-0.100, 0.130), (-0.039, 0.158),
 GRIN_LOWER = [(0.244, 0.168), (0.229, 0.104), (0.165, 0.125),
               (0.096, 0.090), (0.040, 0.125), (-0.021, 0.090),
               (-0.077, 0.125), (-0.133, 0.090), (-0.156, 0.162)]
-GRIN = _face(GRIN_UPPER + GRIN_LOWER)
+GRIN = _face(GRIN_UPPER + GRIN_LOWER, GRIN_SCALE)
 
 
 def build_body(name, mat, col, r_scale=1.0):
@@ -167,6 +184,7 @@ def build_body(name, mat, col, r_scale=1.0):
             a = 2 * math.pi * i / segs
             g = (0.5 - 0.5 * math.cos(N * (a - phase))) ** P["groove_pow"]
             rr = R * (1 - P["groove_depth"] * g) * sh
+            rr *= 1 + P.get("square", 0.0) * math.cos(4 * (a - phase))
             x = rr * P["sx"] * math.cos(a)
             y = rr * P["sy"] * math.sin(a)
             z = zc * R * P["sz"] + CZ
