@@ -1,6 +1,9 @@
 # cultivar scorecard
 
 rubric, each 0-10. overall = mean. iterate until overall >= 8.
+each cultivar's full tutorial — visual description, build, renders,
+per-cultivar scorecard — lives in `tutorial/cultivars/<name>.md`.
+this file is the master table plus shared build notes.
 measured 2026-10-30 against `refs/<name>/front.jpg` + `profile.jpg`.
 
 - sil: silhouette + proportions (w/h within 5% = 9+)

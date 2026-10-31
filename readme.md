@@ -65,18 +65,18 @@ ten cultivars, ten separate scripts in `blender/cultivars/` — each
 pairs one blender technique with one photocraft feature. full
 briefs, reference photos, and doc links live in the [cultivar gallery](tutorial/tutorial.md#ten-more-pumpkins-cultivar-gallery).
 
-|                                                                                       | pumpkin                             | blender feature      | photocraft feature               |
-| ------------------------------------------------------------------------------------- | ----------------------------------- | -------------------- | -------------------------------- |
-| <img src="post/variants/cinderella.png" width="160" alt="cinderella">                 | cinderella — flat red heirloom      | profile lathe        | curves s-curve, live psd         |
-| <img src="post/variants/black-futsu.png" width="160" alt="black futsu">               | black futsu — dark warted block     | geo-nodes scatter    | brightness/contrast lift         |
-| <img src="post/variants/sugar-pie.png" width="160" alt="sugar pie">                   | sugar pie — small neat ball         | primitive + subsurf  | hue/sat warm shift               |
-| <img src="post/variants/baby-boo.png" width="160" alt="baby boo">                     | baby boo — mini white cluster       | linked duplicates    | invert negative                  |
-| <img src="post/variants/porcelain-doll.png" width="160" alt="porcelain doll">         | porcelain doll — pink glossy block  | cube spherify        | outer glow layer style, live psd |
-| <img src="post/variants/jarrahdale.png" width="160" alt="jarrahdale">                 | jarrahdale — blue-grey drum         | sheen bloom          | gradient-map duotone, live psd   |
-| <img src="post/variants/lumina.png" width="160" alt="lumina">                         | lumina — smooth white ball          | subsurface skin      | cooling photo filter             |
-| <img src="post/variants/long-island-cheese.png" width="160" alt="long island cheese"> | long island cheese — flat tan wheel | boolean socket       | warm color balance               |
-| <img src="post/variants/harvest-moon.png" width="160" alt="harvest moon">             | harvest moon — big golden ball      | documented light rig | levels black point               |
-| <img src="post/variants/kabocha.png" width="160" alt="kabocha">                       | kabocha — mottled green drum        | noise + displace     | channel mixer                    |
+|                                                                                       | pumpkin                                                                         | blender feature      | photocraft feature               |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------- | -------------------------------- |
+| <img src="post/variants/cinderella.png" width="160" alt="cinderella">                 | [cinderella](tutorial/cultivars/cinderella.md) — flat red heirloom              | profile lathe        | curves s-curve, live psd         |
+| <img src="post/variants/black-futsu.png" width="160" alt="black futsu">               | [black futsu](tutorial/cultivars/black-futsu.md) — dark warted block            | geo-nodes scatter    | brightness/contrast lift         |
+| <img src="post/variants/sugar-pie.png" width="160" alt="sugar pie">                   | [sugar pie](tutorial/cultivars/sugar-pie.md) — small neat ball                  | primitive + subsurf  | hue/sat warm shift               |
+| <img src="post/variants/baby-boo.png" width="160" alt="baby boo">                     | [baby boo](tutorial/cultivars/baby-boo.md) — mini white cluster                 | linked duplicates    | invert negative                  |
+| <img src="post/variants/porcelain-doll.png" width="160" alt="porcelain doll">         | [porcelain doll](tutorial/cultivars/porcelain-doll.md) — pink glossy block      | cube spherify        | outer glow layer style, live psd |
+| <img src="post/variants/jarrahdale.png" width="160" alt="jarrahdale">                 | [jarrahdale](tutorial/cultivars/jarrahdale.md) — blue-grey drum                 | sheen bloom          | gradient-map duotone, live psd   |
+| <img src="post/variants/lumina.png" width="160" alt="lumina">                         | [lumina](tutorial/cultivars/lumina.md) — smooth white ball                      | subsurface skin      | cooling photo filter             |
+| <img src="post/variants/long-island-cheese.png" width="160" alt="long island cheese"> | [long island cheese](tutorial/cultivars/long-island-cheese.md) — flat tan wheel | boolean socket       | warm color balance               |
+| <img src="post/variants/harvest-moon.png" width="160" alt="harvest moon">             | [harvest moon](tutorial/cultivars/harvest-moon.md) — big golden ball            | documented light rig | levels black point               |
+| <img src="post/variants/kabocha.png" width="160" alt="kabocha">                       | [kabocha](tutorial/cultivars/kabocha.md) — mottled green drum                   | noise + displace     | channel mixer                    |
 
 open `blender/scene.blend` to take the finished pumpkin apart, or
 rebuild it all:

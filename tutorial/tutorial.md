@@ -680,195 +680,28 @@ by hand, so one material edit restyles the whole patch.
 
 the generic pumpkin is one build of `blender/build_pumpkin.py`. every
 cultivar below is its own script in `blender/cultivars/` — separate
-file, separate construction, no shared parameters. each is a whole
-uncarved display fruit (the reference photos in `refs/<name>/` are
-uncarved), built front-first against its spec in
-`refs/<name>/README.md`. rebuild any of them with:
+file, separate construction — with its own tutorial page carrying a
+visual description, build steps, renders, and scorecard.
 
-`blender -b --factory-startup --python-exit-code 1 -P blender/cultivars/<name>.py`
+| cultivar           | tutorial                                | blender feature      | photocraft feature  |
+| ------------------ | --------------------------------------- | -------------------- | ------------------- |
+| cinderella         | [page](cultivars/cinderella.md)         | profile lathe        | curves (psd)        |
+| black futsu        | [page](cultivars/black-futsu.md)        | geo-nodes scatter    | brightness/contrast |
+| sugar pie          | [page](cultivars/sugar-pie.md)          | primitive + subsurf  | hue/saturation      |
+| baby boo           | [page](cultivars/baby-boo.md)           | linked duplicates    | invert              |
+| porcelain doll     | [page](cultivars/porcelain-doll.md)     | cube spherify        | outer glow (psd)    |
+| jarrahdale         | [page](cultivars/jarrahdale.md)         | sheen bloom          | gradient map (psd)  |
+| lumina             | [page](cultivars/lumina.md)             | subsurface skin      | photo filter (cool) |
+| long island cheese | [page](cultivars/long-island-cheese.md) | boolean socket       | color balance       |
+| harvest moon       | [page](cultivars/harvest-moon.md)       | documented light rig | levels              |
+| kabocha            | [page](cultivars/kabocha.md)            | noise + displace     | channel mixer       |
 
-each entry shows the raw front render and the graded result. the
-side-profile render sits beside it (`variants/<name>-profile.png`).
-exact post chains in `post/variants.sh`.
-
-key: **b** = blender feature shown, **p** = photocraft feature shown.
-terms link out on first use: the
+each entry shows the raw front render and the graded result in its
+own page, with the side-profile render beside them. exact post
+chains in `post/variants.sh`. key: **b** = blender feature shown,
+**p** = photocraft feature shown. terms link out on first use: the
 [blender manual](https://docs.blender.org/manual/en/latest/)
 and [photocraft](https://github.com/storytold/photocraft).
-
-### 1. cinderella (rouge vif d'etampes)
-
-french heirloom: very flat wide disc, concave crown, 14 deep ribs,
-red-orange skin. build: `blender/cultivars/cinderella.py` revolves a
-measured side profile ([spin](https://docs.blender.org/manual/en/latest/modeling/meshes/editing/duplicate_extrude/spin.html)
-tool equivalent), then modulates each ring with a 14-fold rib
-function. spec: `refs/cinderella/README.md`.
-
-![cinderella render](variants/cinderella.png) ![cinderella graded](../post/variants/cinderella.png)
-
-**b — profile lathe + proportional crown.** the concave dip is part
-of the profile polyline, and the short corky stem seats into it.
-
-**p — curves adjustment layer** (`layer.newAdjustmentLayer.curves`
-
-- `layer.setAdjustment {"red":[[0,0],[64,48],[192,208],[255,255]]}`).
-  red-channel s-curve; the shipped `.psd` keeps the curve live.
-
-### 2. black futsu
-
-japanese heirloom: squat blocky fruit, wart rows along the ribs,
-dark green curing toward buff. build:
-`blender/cultivars/black_futsu.py` — ribbed body plus a
-[geometry nodes](https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/index.html)
-tree that distributes points on faces masked to rib crests and
-instances a wart prototype on them. spec:
-`refs/black-futsu/README.md`.
-
-![black futsu render](variants/black-futsu.png) ![black futsu graded](../post/variants/black-futsu.png)
-
-**b — scatter + [instance on points](https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/point/instance_on_points.html).**
-real wart geometry, seeded, density driven by the groove attribute.
-
-**p — brightness/contrast**
-(`image.adjustments.brightnessContrast
-{"brightness":28,"contrast":18}`). lifts the dark rind for print.
-threshold was tried first and ignored its level in photocraft
-0.17, so the lift stands in — recorded, not hidden.
-
-### 3. sugar pie
-
-new england pie standard: small neat ball, shallow ribs, smooth
-bright rind, thick ridged upright stem. build:
-`blender/cultivars/sugar_pie.py` — a bmesh uv sphere scaled to pie
-proportions, ribbed in python, smoothed with a
-[subdivision surface](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/subdivision_surface.html).
-spec: `refs/sugar-pie/README.md`.
-
-![sugar pie render](variants/sugar-pie.png) ![sugar pie graded](../post/variants/sugar-pie.png)
-
-**b — primitive-deform.** start from a real primitive, deform the
-verts, let subsurf finish the surface.
-
-**p — hue/saturation** (`image.adjustments.hueSaturation
-{"hue":8,"saturation":10}`). pie orange to porch orange.
-
-### 4. baby boo
-
-miniature white minis that grow in clusters. build:
-`blender/cultivars/baby_boo.py` builds one ribbed mini, then places
-two [linked duplicates](https://docs.blender.org/manual/en/latest/scene_layout/object/editing/linked_duplicates.html)
-at varied rotation and scale — same mesh, no rebuild. spec:
-`refs/baby-boo/README.md`.
-
-![baby boo render](variants/baby-boo.png) ![baby boo ghost](../post/variants/baby-boo.png)
-
-**b — linked duplicates.** one material edit restyles the cluster.
-
-**p — invert** (`image.adjustments.invert`). white pumpkins become
-a ghost negative.
-
-### 5. porcelain doll
-
-pink blocky fruit with square shoulders. build:
-`blender/cultivars/porcelain_doll.py` — a subdivided cube spherified
-to a sphere, so flat sides survive, with a
-[weighted normal](https://docs.blender.org/manual/en/latest/modeling/modifiers/modify/weighted_normal.html)
-modifier and a glossy coat shader. spec:
-`refs/porcelain-doll/README.md`.
-
-![porcelain doll render](variants/porcelain-doll.png) ![porcelain doll graded](../post/variants/porcelain-doll.png)
-
-**b — cube to pumpkin.** box modeling origin, organic result.
-
-**p — outer glow layer style** (`layer.layerStyle.replace`
-`{"effects":[{"kind":"outerGlow","params":{"color":"#ff9ac0",
-"opacity":0.5,"size":12}}]}`). live pink halo, kept editable in
-the shipped `.psd`.
-
-### 6. jarrahdale
-
-australian heirloom: slate blue-grey flattened drum, dusty bloom.
-build: `blender/cultivars/jarrahdale.py` revolves a drum profile;
-the bloom is a
-[principled](https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html)
-sheen layer masked to rib valleys, not geometry. spec:
-`refs/jarrahdale/README.md`.
-
-![jarrahdale render](variants/jarrahdale.png) ![jarrahdale duotone](../post/variants/jarrahdale.png)
-
-**b — sheen for bloom.** dusty skin without dusty vertices.
-
-**p — gradient map** (`layer.newAdjustmentLayer.gradientMap`,
-shadows `#4a5a64` to highlights `#e88a30`). slate-to-amber
-duotone, map kept live in the `.psd`.
-
-### 7. lumina
-
-smooth white ball, green stem. build:
-`blender/cultivars/lumina.py` — subdivided icosphere for even
-triangles, faint ribs, white rind with
-[subsurface scattering](https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html)
-so it reads lit from within. spec: `refs/lumina/README.md`.
-
-![lumina render](variants/lumina.png) ![lumina graded](../post/variants/lumina.png)
-
-**b — subsurface skin.** the smooth-fruit study.
-
-**p — photo filter, cooling** (`image.adjustments.photoFilter
-{"color":"#bfd9e8","density":15}`). moonlit, opposite of the
-generic's warm grade.
-
-### 8. long island cheese
-
-buff-tan wheel with the stem sunk in a recessed well. build:
-`blender/cultivars/long_island_cheese.py` — flattened ribbed wheel,
-then a [boolean](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/booleans.html)
-cutter sockets the crown and the short stem plants inside it.
-spec: `refs/long-island-cheese/README.md`.
-
-![long island cheese render](variants/long-island-cheese.png) ![cheese graded](../post/variants/long-island-cheese.png)
-
-**b — boolean socket.** holes for seats, not just faces.
-
-**p — color balance** (`image.adjustments.colorBalance
-{"midtones":[12,6,-4]}`). warm mids, held shadows.
-
-### 9. harvest moon
-
-big golden ball. build: `blender/cultivars/harvest_moon.py` — a
-smooth globe whose point is the documented three-point area-light
-rig (warm key, cool fill, warm rim, values in the file). spec:
-`refs/harvest-moon/README.md`.
-
-![harvest moon render](variants/harvest-moon.png) ![harvest moon graded](../post/variants/harvest-moon.png)
-
-**b — studio lighting** ([area lights](https://docs.blender.org/manual/en/latest/render/lights/index.html),
-documented values). gold reads without blowing out.
-
-**p — levels** (`image.adjustments.levels
-{"shadowInput":18,"gamma":0.95}`). black point in for night
-contrast. compare with cinderella's curves: curves shape, levels
-range.
-
-### 10. kabocha
-
-dark drum with celadon mottling and pale crest stripes, all
-procedural. build: `blender/cultivars/kabocha.py` — a drum body
-whose [noise texture](https://docs.blender.org/manual/en/latest/render/shader_nodes/textures/noise.html)
-drives both the color mix and a displace modifier, with a
-stretched second mapping for the stripes. spec:
-`refs/kabocha/README.md`.
-
-![kabocha render](variants/kabocha.png) ![kabocha graded](../post/variants/kabocha.png)
-
-**b — texture coordinates + mapping.** mottling without painting.
-(note: the musgrave shader node is gone in blender 4.4 — noise
-with distortion stands in; the legacy texture still feeds the
-displace modifier.)
-
-**p — channel mixer** (`image.adjustments.channelMixer
-{"red":[100,20,0,0],"green":[0,80,20,0],"blue":[0,0,100,0]}`).
-rows are four numbers (r,g,b,constant).
 
 ## how records are kept
 
